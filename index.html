@@ -104,6 +104,37 @@
         display: block;
         opacity: 0.4;
       }
+
+      .tileset-container {
+        border: 2px solid #666;
+        background: #999;
+        box-shadow: #000 0px 1px 10px 1px;
+        padding: 21px 1px 1px 1px;
+        width: 96px;
+        overflow: hidden;
+        z-index: 10000;
+        position: absolute;
+        top: 200px;
+        left: 20px;
+        cursor: move;
+      }
+
+      .tileset-container .tile {
+        cursor: pointer;
+      }
+
+      .tileset-container .tile:hover {
+        outline: 2px solid #ff0;
+        position: relative;
+        z-index: 100;
+      }
+
+      .tileset-container .tile.selected:hover,
+      .tileset-container .tile.selected {
+        outline: 2px solid #f00;
+        position: relative;
+        z-index: 101;
+      }
     </style>
   </head>
   <body>
