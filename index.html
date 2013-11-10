@@ -1,149 +1,17 @@
 <!doctype html>
 <html>
   <head>
-    <style type="text/css">
-      html,
-      body {
-        height: 100%;
-        padding: 0;
-        margin: 0;
-      }
-
-      h1, h2, h3, h4, h5, h6 {
-        font-size: 12px;
-        font-weight: normal;
-        line-height: 1;
-      }
-
-      .room {
-        outline: 0;
-        z-index: 0;
-      }
-
-      .room:hover {
-        outline: 3px solid #0033ff;
-        z-index: 2000 !important;
-      }
-
-      #toolbar {
-        position: absolute;
-        top: 0px;
-        height: 32px;
-        width: 100%;
-        background: #ccc;
-        border-bottom: 2px solid #999;
-        z-index: 100;
-        box-shadow: #000 0px 1px 10px 1px;
-      }
-
-      #toolbar h2 {
-        display: inline-block;
-      }
-
-      #toolbar fieldset {
-        display: inline-block;
-      }
-
-      #status {
-        position: absolute;
-        bottom:0;
-        height: 32px;
-        width: 100%;
-        background: #ccc;
-        border-top: 2px solid #999;
-        z-index: 100;
-        box-shadow: #000 0px 1px 10px 3px;
-      }
-
-      #editor {
-        position: relative;
-        width: 100%;
-        padding: 34px 0;
-        z-index: 1;
-      }
-
-      #editor-scroller {
-        overflow: auto;
-        overflow-y: scroll;
-        height: 100%;
-      }
-
-      #editor-content {
-        background: #aaa url(assets/images/grid-16-32.png) repeat scroll 0 0;
-      }
-
-      .editor-filler-top,
-      .editor-filler-bottom {
-        height: 34px;
-      }
-
-      .camera-bounds {
-        outline: 1px solid #ffff00;
-        display: none;
-      }
-
-      .show-camera-bounds .camera-bounds {
-        display: block;
-      }
-
-      .transition-region {
-        outline: 1px solid rgba(0, 255, 0, 1.0);
-        background: rgba(32, 255, 32, 0.2);
-        display: none;
-      }
-
-      .show-transitions .transition-region {
-        display: block;
-      }
-
-      .layer-attribute {
-        display: none;
-      }
-
-      .show-attribute .layer-attribute {
-        display: block;
-        opacity: 0.4;
-      }
-
-      .tileset-container {
-        border: 2px solid #666;
-        background: #999;
-        box-shadow: #000 0px 1px 10px 1px;
-        padding: 21px 1px 1px 1px;
-        width: 96px;
-        overflow: hidden;
-        z-index: 10000;
-        position: absolute;
-        top: 200px;
-        left: 20px;
-        cursor: move;
-      }
-
-      .tileset-container .tile {
-        cursor: pointer;
-      }
-
-      .tileset-container .tile:hover {
-        outline: 2px solid #ff0;
-        position: relative;
-        z-index: 100;
-      }
-
-      .tileset-container .tile.selected:hover,
-      .tileset-container .tile.selected {
-        outline: 2px solid #f00;
-        position: relative;
-        z-index: 101;
-      }
-    </style>
+    <link type="text/css" rel="stylesheet" href="assets/css/normalize.css" />
+    <link type="text/css" rel="stylesheet" href="assets/css/uchuu.css" />
   </head>
   <body>
     <div id="toolbar">
       <h2>Toolbar</h2>
       <fieldset>
-        <label><input type="radio" name="tool" value="select" checked />Select</label>
-        <label><input type="radio" name="tool" value="move" />Move</label>
-        <label><input type="radio" name="tool" value="pencil" />Pencil</label>
+        <input class="checkbox-button" type="radio" name="tool" value="select" id="tool-select" checked /><label for="tool-select">Select<span class="tool-icon select"></span></label>
+        <input class="checkbox-button" type="radio" name="tool" value="move" id="tool-move" /><label for="tool-move">Move<span class="tool-icon move"></span></label>
+        <input class="checkbox-button" type="radio" name="tool" value="pencil" id="tool-pencil" /><label for="tool-pencil">Pencil<span class="tool-icon pencil"></span></label>
+        <input class="checkbox-button" type="radio" name="tool" value="floodfill" id="tool-floodfill" /><label for="tool-floodfill">Flood Fill<span class="tool-icon floodfill"></span></label>
       </fieldset>
       <fieldset>
         <label><input type="radio" name="mode" value="tile" checked />Tile</label>

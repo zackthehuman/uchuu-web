@@ -1,0 +1,203 @@
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.room {
+  outline: 0;
+  z-index: 0;
+}
+
+.room:hover {
+  outline: 3px solid #0033ff;
+  z-index: 2000 !important;
+}
+
+#toolbar {
+  position: absolute;
+  top: 0px;
+  height: 32px;
+  width: 100%;
+  background: #ccc;
+  border-bottom: 2px solid #999;
+  z-index: 100;
+  box-shadow: #000 0px 1px 10px 1px;
+}
+
+#toolbar h2 {
+  display: inline-block;
+}
+
+#toolbar fieldset {
+  display: inline-block;
+}
+
+#status {
+  position: absolute;
+  bottom:0;
+  height: 32px;
+  width: 100%;
+  background: #ccc;
+  border-top: 2px solid #999;
+  z-index: 100;
+  box-shadow: #000 0px 1px 10px 3px;
+}
+
+#editor {
+  position: relative;
+  width: 100%;
+  padding: 34px 0;
+  z-index: 1;
+}
+
+#editor-scroller {
+  overflow: auto;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+#editor-content {
+  background: #aaa url(../images/grid-16-32.png) repeat scroll 0 0;
+}
+
+.editor-filler-top,
+.editor-filler-bottom {
+  height: 34px;
+}
+
+.camera-bounds {
+  outline: 1px solid #ffff00;
+  display: none;
+}
+
+.show-camera-bounds .camera-bounds {
+  display: block;
+}
+
+.checkbox-button {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+}
+
+.checkbox-button + label {
+  padding: 5px 8px;
+  background: #666666;
+  display: inline-block;
+  border-radius: 5px;
+  color: #ffffff;
+}
+
+.checkbox-button:focus + label {
+  outline: 1px dotted #f0f;
+}
+
+.checkbox-button:checked + label {
+  background: #ff0;
+  color: #333333;
+}
+
+.transition-region {
+  outline: 1px solid rgba(0, 255, 0, 1.0);
+  background: rgba(32, 255, 32, 0.2);
+  display: none;
+}
+
+.show-transitions .transition-region {
+  display: block;
+}
+
+.layer-attribute {
+  display: none;
+}
+
+.show-attribute .layer-attribute {
+  display: block;
+  opacity: 0.4;
+}
+
+.tileset-container {
+  border: 2px solid #666;
+  background: #999;
+  box-shadow: #000 0px 1px 10px 1px;
+  padding: 21px 1px 1px 1px;
+  width: 96px;
+  overflow: hidden;
+  z-index: 10000;
+  position: absolute;
+  top: 200px;
+  left: 20px;
+  cursor: move;
+}
+
+.tileset-container .tile {
+  cursor: pointer;
+}
+
+.tileset-container .tile:hover {
+  outline: 2px solid #ff0;
+  position: relative;
+  z-index: 100;
+}
+
+.tileset-container .tile.selected:hover,
+.tileset-container .tile.selected {
+  outline: 2px solid #f00;
+  position: relative;
+  z-index: 101;
+}
+
+.tool-icon {
+  width: 18px;
+  height: 18px;
+  background: url(../images/tools-18x18.png) no-repeat scroll;
+  display: inline-block;
+}
+
+.tool-icon.move {
+  background-position: 0px 0px;
+}
+
+.tool-icon.move.active {
+  background-position: -18px 0px;
+}
+
+.tool-icon.select {
+  background-position: 0px -18px;
+}
+
+.tool-icon.select.active {
+  background-position: -18px -18px;
+}
+
+.tool-icon.eyedropper {
+  background-position: 0px -36px;
+}
+
+.tool-icon.eyedropper.active {
+  background-position: -18px -36px;
+}
+
+.tool-icon.pencil {
+  background-position: 0px -54px;
+}
+
+.tool-icon.pencil.active {
+  background-position: -18px -54px;
+}
+
+.tool-icon.floodfill {
+  background-position: 0px -72px;
+}
+
+.tool-icon.floodfill.active {
+  background-position: -18px -72px;
+}
