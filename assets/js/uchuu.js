@@ -2,9 +2,11 @@
 
 define('uchuu', [
   'controllers/TilesetController',
+  'controllers/ToolController',
   'views/TilesetView'
 ], function(
   TilesetController,
+  ToolController,
   TilesetView
 ) {
   var global = window,
@@ -283,7 +285,10 @@ define('uchuu', [
         stage: stage
       });
 
-      var toolController = new ToolController({ delegate: this });
+      var toolController = new ToolController({
+        delegate: this,
+        el: $('#toolbar')
+      });
 
       global.currentMap = new MapModel(stage);
 
@@ -291,10 +296,12 @@ define('uchuu', [
         el: $('#editor-content')
       });
 
-      this.toolbarView = new ToolbarView({
-        el: $('#toolbar'),
-        delegate: toolController
-      });
+      // this.toolbarView = new ToolbarView({
+      //   el: $('#toolbar'),
+      //   delegate: toolController
+      // });
+
+      // toolController.toolView = this.toolbarView;
 
       this.$el.find('#editor-content>div').append(new RoomView({
         model: roomModel
@@ -317,48 +324,6 @@ define('uchuu', [
         this.editorView._recalculateLayout();
       }
     }
-  });
-
-  var ToolController = Backbone.View.extend({
-    editMode: null,
-    currentTool: null,
-
-    delegate: null,
-
-    initialize: function(options) {
-      _.bindAll(this,
-        '_handleEditModeChanged');
-
-      this.setEditMode('tile');
-      this.setCurrentTool('select');
-      this.delegate = options.delegate;
-
-      this.listenTo(this, 'editModeChanged', this._handleEditModeChanged);
-      this.listenTo(this, 'toolChanged',     this._handleToolChanged);
-    },
-
-    setEditMode: function(mode) {
-      this.editMode = mode;
-      this.trigger('editModeChanged', this.editMode);
-    },
-
-    setCurrentTool: function(toolName) {
-      this.currentTool = toolName;
-      this.trigger('toolChanged', this.currentTool);
-    },
-
-    _handleEditModeChanged: function(mode) {
-      if(mode === 'tile') {
-        $('#editor').removeClass('show-attribute').addClass('show-tile');
-      } else if(mode === 'attribute') {
-        $('#editor').addClass('show-attribute').removeClass('show-tile');
-      }
-    },
-
-    _handleToolChanged: function(tool) {
-      console.log('Tool changed to ' + tool);
-    }
-
   });
 
   /**
@@ -752,67 +717,6 @@ define('uchuu', [
       this.$el
         .height(_.max(bottoms))
         .width(_.max(rights));
-    }
-  });
-
-  var ToolbarView = Backbone.View.extend({
-    delegate: null, 
-
-    events: {
-      'click .toggle-transitions,.toggle-camera': '_handleClickToggler',
-      'click input[name=mode]': '_handleClickMode',
-      'click input[name=tool]': '_handleClickTool'
-    },
-
-    togglerMap: {
-      'toggle-transitions': 'show-transitions',
-      'toggle-camera': 'show-camera-bounds'
-    },
-
-    initialize: function(options) {
-      options = options || {};
-
-      _.bindAll(this,
-        '_handleClickToggler');
-
-      this.delegate = options.delegate;
-    },
-
-    _handleClickToggler: function(evt) {
-      var $toggler = $(evt.currentTarget),
-        appliedClass = '';
-
-      if($toggler.hasClass('toggle-transitions')) {
-        appliedClass = this.togglerMap['toggle-transitions'];
-      } else if($toggler.hasClass('toggle-camera')) {
-        appliedClass = this.togglerMap['toggle-camera'];
-      }
-
-      if($toggler.is(':checked')) {
-        $('#editor').addClass(appliedClass);
-      } else {
-        $('#editor').removeClass(appliedClass);
-      }
-
-      if(this.delegate) {
-
-      }
-    },
-
-    _handleClickMode: function(evt) {
-      var mode = $(evt.currentTarget).val();
-
-      if(this.delegate) {
-        this.delegate.setEditMode(mode);
-      }
-    },
-
-    _handleClickTool: function(evt) {
-      var tool = $(evt.currentTarget).val();
-
-      if(this.delegate) {
-        this.delegate.setCurrentTool(tool);
-      }
     }
   });
 

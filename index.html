@@ -8,10 +8,29 @@
     <div id="toolbar">
       <h2>Toolbar</h2>
       <fieldset>
-        <input class="checkbox-button" type="radio" name="tool" value="select" id="tool-select" checked /><label for="tool-select">Select<span class="tool-icon select"></span></label>
-        <input class="checkbox-button" type="radio" name="tool" value="move" id="tool-move" /><label for="tool-move">Move<span class="tool-icon move"></span></label>
-        <input class="checkbox-button" type="radio" name="tool" value="pencil" id="tool-pencil" /><label for="tool-pencil">Pencil<span class="tool-icon pencil"></span></label>
-        <input class="checkbox-button" type="radio" name="tool" value="floodfill" id="tool-floodfill" /><label for="tool-floodfill">Flood Fill<span class="tool-icon floodfill"></span></label>
+        <input class="checkbox-button" type="radio" name="tool" value="select" id="tool-select" />
+        <label for="tool-select" title="Selection tool">
+          <span class="label-text">Select</span>
+          <span class="tool-icon select"></span>
+        </label>
+
+        <input class="checkbox-button" type="radio" name="tool" value="move" id="tool-move" />
+        <label for="tool-move" title="Move tool">
+          <span class="label-text">Move</span>
+          <span class="tool-icon move"></span>
+        </label>
+
+        <input class="checkbox-button" type="radio" name="tool" value="pencil" id="tool-pencil" />
+        <label for="tool-pencil" title="Pencil tool">
+          <span class="label-text">Pencil</span>
+          <span class="tool-icon pencil"></span>
+        </label>
+
+        <input class="checkbox-button" type="radio" name="tool" value="floodfill" id="tool-floodfill" />
+        <label for="tool-floodfill" title="Fill tool">
+          <span class="label-text">Flood Fill</span>
+          <span class="tool-icon floodfill"></span>
+        </label>
       </fieldset>
       <fieldset>
         <label><input type="radio" name="mode" value="tile" checked />Tile</label>

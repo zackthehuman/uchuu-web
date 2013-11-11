@@ -88,10 +88,16 @@ h1, h2, h3, h4, h5, h6 {
   left: -1000px;
 }
 
+.checkbox-button + label > .label-text {
+  display: none;
+}
+
 .checkbox-button + label {
-  padding: 5px 8px;
+  padding: 3px;
   background: #666666;
   display: inline-block;
+  height: 18px;
+  line-height: 18px;
   border-radius: 5px;
   color: #ffffff;
 }
@@ -166,7 +172,8 @@ h1, h2, h3, h4, h5, h6 {
   background-position: 0px 0px;
 }
 
-.tool-icon.move.active {
+.tool-icon.move.active,
+input:checked + label .tool-icon.move {
   background-position: -18px 0px;
 }
 
@@ -174,7 +181,8 @@ h1, h2, h3, h4, h5, h6 {
   background-position: 0px -18px;
 }
 
-.tool-icon.select.active {
+.tool-icon.select.active,
+input:checked + label .tool-icon.select {
   background-position: -18px -18px;
 }
 
@@ -182,7 +190,8 @@ h1, h2, h3, h4, h5, h6 {
   background-position: 0px -36px;
 }
 
-.tool-icon.eyedropper.active {
+.tool-icon.eyedropper.active,
+input:checked + label .tool-icon.eyedropper {
   background-position: -18px -36px;
 }
 
@@ -190,7 +199,8 @@ h1, h2, h3, h4, h5, h6 {
   background-position: 0px -54px;
 }
 
-.tool-icon.pencil.active {
+.tool-icon.pencil.active,
+input:checked + label .tool-icon.pencil {
   background-position: -18px -54px;
 }
 
@@ -198,6 +208,7 @@ h1, h2, h3, h4, h5, h6 {
   background-position: 0px -72px;
 }
 
-.tool-icon.floodfill.active {
+.tool-icon.floodfill.active,
+input:checked + label .tool-icon.floodfill {
   background-position: -18px -72px;
 }
