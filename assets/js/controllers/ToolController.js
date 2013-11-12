@@ -11,6 +11,8 @@ define('controllers/ToolController', [
 
     delegate: null,
 
+    editorModel: null,
+
     toolView: null,
 
     initialize: function(options) {
@@ -23,6 +25,7 @@ define('controllers/ToolController', [
       this.setEditMode('tile');
       this.setCurrentTool('select');
       this.delegate = options.delegate;
+      this.editorModel = options.editorModel;
 
       this.toolView = new ToolView({
         el: this.el,
@@ -31,19 +34,30 @@ define('controllers/ToolController', [
 
       this.listenTo(this, 'editModeChanged', this._handleEditModeChanged);
       this.listenTo(this, 'toolChanged',     this._handleToolChanged);
+
+      if(this.editorModel) {
+        this.listenTo(this.editorModel, 'change:currentTool', this._handleToolChanged);
+        this.listenTo(this.editorModel, 'change:editingMode', this._handleEditModeChanged);
+      }
     },
 
     setEditMode: function(mode) {
-      this.editMode = mode;
-      this.trigger('editModeChanged', this.editMode);
+      if(this.editorModel) {
+        this.editorModel.set('editingMode', mode);
+      }
     },
 
     setCurrentTool: function(toolName) {
-      this.currentTool = toolName;
-      this.trigger('toolChanged', this.currentTool);
+      if(this.editorModel) {
+        this.editorModel.set('currentTool', toolName);
+      }
     },
 
-    _handleEditModeChanged: function(mode) {
+    _handleEditModeChanged: function(model) {
+      var mode = model.get('editingMode');
+
+      console.log('Editing mode changed to ' + mode);
+
       if(mode === 'tile') {
         $('#editor').removeClass('show-attribute').addClass('show-tile');
       } else if(mode === 'attribute') {
@@ -51,11 +65,11 @@ define('controllers/ToolController', [
       }
     },
 
-    _handleToolChanged: function(tool) {
-      console.log('Tool changed to ' + tool);
+    _handleToolChanged: function(model) {
+      console.log('Tool changed to ' + model.changed.currentTool);
 
       if(this.toolView) {
-        this.toolView.selectToolByName(tool);
+        this.toolView.selectToolByName(model.changed.currentTool);
       }
     }
 

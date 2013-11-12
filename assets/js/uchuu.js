@@ -1,10 +1,12 @@
 /*global console */
 
 define('uchuu', [
+  'models/EditorModel',
   'controllers/TilesetController',
   'controllers/ToolController',
   'views/TilesetView'
 ], function(
+  EditorModel,
   TilesetController,
   ToolController,
   TilesetView
@@ -266,11 +268,12 @@ define('uchuu', [
         .find('#editor-content')
         .empty()
         .append(uchuu.constructStageElement(stage));
-        // .append("<h1>Done!</h1><h2>" + stage.tileset + "</h2>")
-        // .append(uchuu.textures[uchuu.tilesets[stage.tileset].surface])
       
+      var editorModel = new EditorModel();
+
       var tilesetController = new TilesetController({
-        delegate: this
+        delegate: this,
+        editorModel: editorModel
       });
 
       var tilesetView = new TilesetView({
@@ -287,6 +290,7 @@ define('uchuu', [
 
       var toolController = new ToolController({
         delegate: this,
+        editorModel: editorModel,
         el: $('#toolbar')
       });
 
@@ -294,18 +298,17 @@ define('uchuu', [
 
       this.editorView = new EditorView({
         el: $('#editor-content')
-      });
-
-      // this.toolbarView = new ToolbarView({
-      //   el: $('#toolbar'),
-      //   delegate: toolController
-      // });
-
-      // toolController.toolView = this.toolbarView;
+      }); 
 
       this.$el.find('#editor-content>div').append(new RoomView({
         model: roomModel
       }).render().el);
+
+      editorModel.set('currentTool', 'select');
+
+      this.listenTo(editorModel, 'change:currentTile', function(model) {
+        console.log('Selected tile changed to ' + model.get('currentTile'));
+      });
 
       this.trigger('layoutChanged');
     },

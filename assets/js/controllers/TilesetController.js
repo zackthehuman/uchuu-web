@@ -2,7 +2,9 @@
 // TODO: Require backbone and underscore
 define('controllers/TilesetController', function() {
   var TilesetController = Backbone.View.extend({
-    selectedTileIndex: null,
+    initialize: function(options) {
+      this.editorModel = options.editorModel;
+    },
 
     onTileClicked: function(sourceView, evt) {
       var tileIndex;
@@ -15,8 +17,9 @@ define('controllers/TilesetController', function() {
         }
 
         if(tileIndex !== this.selectedTileIndex) {
-          this.selectedTileIndex = tileIndex;
-          this.trigger('selectedTileChanged', this.selectedTileIndex);
+          if(this.editorModel) {
+            this.editorModel.set('currentTile', tileIndex);
+          }
         }
       }
     }
