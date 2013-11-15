@@ -4,15 +4,19 @@ define('uchuu', [
   'models/EditorModel',
   'controllers/TilesetController',
   'controllers/ToolController',
+  'controllers/EditorController',
   'views/TilesetView'
 ], function(
   EditorModel,
   TilesetController,
   ToolController,
+  EditorController,
   TilesetView
 ) {
   var global = window,
     uchuu = {};
+
+  global.uchuu = uchuu;
 
   uchuu.textures = {};
   uchuu.tilesets = {};
@@ -262,14 +266,22 @@ define('uchuu', [
       var that = this,
         stage = options.stage;
 
+      global.currentMap = new MapModel(stage);
+
       _.bindAll(this, 'recalculateLayout');
 
-      this.$el
-        .find('#editor-content')
-        .empty()
-        .append(uchuu.constructStageElement(stage));
+      // this.$el
+      //   .find('#editor-content')
+      //   .empty()
+      //   .append(uchuu.constructStageElement(stage));
       
       var editorModel = new EditorModel();
+      var editorController = new EditorController({
+        delegate: this,
+        editorModel: editorModel,
+        stageModel: global.currentMap,
+        el: $('#editor-content')
+      });
 
       var tilesetController = new TilesetController({
         delegate: this,
@@ -293,8 +305,6 @@ define('uchuu', [
         editorModel: editorModel,
         el: $('#toolbar')
       });
-
-      global.currentMap = new MapModel(stage);
 
       this.editorView = new EditorView({
         el: $('#editor-content')
@@ -385,6 +395,11 @@ define('uchuu', [
         this.subModels = {
           rooms: new RoomCollection(attributes.rooms)
         };
+
+        this.subModels.rooms.each(_.bind(function(roomModel) {
+          roomModel.stage = this;
+          roomModel.gridsize = this.get('gridsize');
+        }, this));
       }
     }
   });
