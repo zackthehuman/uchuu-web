@@ -92,7 +92,44 @@ define('views/RoomView', function() {
     },
 
     _renderAttrLayer: function() {
+      var $canvas = this.attrCanvas,
+        pixelWidth,
+        pixelHeight,
+        attrWidth,
+        attrHeight,
+        gridSize,
+        attrs,
+        attrX,
+        attrY,
+        attrIndex,
+        attrPositionX,
+        attrPositionY;
 
+      if(!$canvas) {
+        $canvas = this.attrCanvas = $('<canvas />');
+      }
+
+      gridSize    = this.model.gridsize;
+      attrWidth   = this.model.get('width');
+      attrHeight  = this.model.get('height');
+      pixelWidth  = attrWidth * gridSize;
+      pixelHeight = attrHeight * gridSize;
+
+      $canvas
+        .attr('width', pixelWidth)
+        .attr('height', pixelHeight)
+        .addClass('layer-attribute');
+
+      attrs = this.model.get('attr');
+
+      for(attrY = 0; attrY < attrHeight; ++attrY) {
+        for(attrX = 0; attrX < attrWidth; ++attrX) {
+          attrIndex = attrY * attrWidth + attrX;
+          attrPositionX = attrX * gridSize;
+          attrPositionY = attrY * gridSize;
+          this.drawAttribute(attrs[attrIndex], attrPositionX, attrPositionY);
+        }
+      }
     },
 
     drawTile: function(tileIndex, x, y) {
@@ -123,8 +160,23 @@ define('views/RoomView', function() {
       }
     },
 
-    drawAttribute: function(attr, x, y) {
+    drawAttribute: function(attrValue, x, y) {
+      var graphics,
+        gridSize;
 
+      gridSize = this.model.gridsize;
+
+      if(this.tileCanvas) {
+        graphics = this.attrCanvas[0].getContext('2d');
+
+        if(attrValue === 0) {
+          graphics.setFillColor('#000');
+        } else if(attrValue === 1) {
+          graphics.setFillColor('#FFF');
+        }
+
+        graphics.fillRect(x, y, gridSize, gridSize);
+      }
     }
   });
 
