@@ -8,10 +8,13 @@ define('views/RoomView', function() {
 
     tileCanvas: null,
     attrCanvas: null,
+    cameraBounds: null,
 
     events: {
-      'click': '_handleClick',
-      'mousemove': '_handleMousemove'
+      'click':     '_handleClick',
+      'mousemove': '_handleMousemove',
+      'mousedown': '_handleMousedown',
+      'mouseup':   '_handleMouseup'
     },
 
     initialize: function(options) {
@@ -31,7 +34,21 @@ define('views/RoomView', function() {
     },
 
     _handleMousemove: function(evt) {
-      console.log('Mouse is moving.');
+      if(this.delegate) {
+        this.delegate.onRoomMousemove(this, evt);
+      }
+    },
+
+    _handleMousedown: function(evt) {
+      if(this.delegate) {
+        this.delegate.onRoomMousedown(this, evt);
+      }
+    },
+
+    _handleMouseup: function(evt) {
+      if(this.delegate) {
+        this.delegate.onRoomMouseup(this, evt);
+      }
     },
 
     render: function() {
@@ -50,10 +67,12 @@ define('views/RoomView', function() {
 
         this._renderTileLayer();
         this._renderAttrLayer();
+        this._renderCameraBounds();
 
         this.$el.empty()
           .append(this.tileCanvas)
-          .append(this.attrCanvas);
+          .append(this.attrCanvas)
+          .append(this.cameraBounds);
 
         this.$el.css({
           width: tileWidth * gridSize,
@@ -148,6 +167,31 @@ define('views/RoomView', function() {
           this.drawAttribute(attrs[attrIndex], attrPositionX, attrPositionY);
         }
       }
+    },
+
+    _renderCameraBounds: function() {
+      var width = this.model.get('cameraBounds').width,
+        height = this.model.get('cameraBounds').height,
+        x = this.model.get('cameraBounds').x,
+        y = this.model.get('cameraBounds').y;
+
+        width *= this.model.gridsize;
+        height *= this.model.gridsize;
+        x *= this.model.gridsize;
+        y *= this.model.gridsize;
+
+      this.cameraBounds = $('<div class="camera-bounds"></div>')
+        .css({
+          width: width,
+          height: height,
+          position: 'absolute',
+          top: y,
+          left: x
+        });
+    },
+
+    _renderTransitionRegions: function() {
+
     },
 
     drawTile: function(tileIndex, x, y) {

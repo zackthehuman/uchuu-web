@@ -53,6 +53,23 @@ define('controllers/EditorController', [
           this.roomViews.push(roomView);
         }, this));
       }
+    },
+
+    onRoomMousedown: function(roomView) {
+      console.log('Mouse down in a room', roomView);
+      // TODO: Depending on tool selected, begin an edit
+    },
+
+    onRoomMouseup: function(roomView) {
+      console.log('Mouse up in a room', roomView);
+      // TODO: Depending on tool selected, complete an edit
+
+    },
+
+    onRoomMousemove: function(roomView) {
+      console.log('Mouse moved in a room', roomView);
+      // TODO: Depending on tool selected, record the edits tile by tile
+
     }
 
   });
