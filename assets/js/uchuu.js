@@ -310,9 +310,9 @@ define('uchuu', [
         el: $('#editor-content')
       }); 
 
-      this.$el.find('#editor-content>div').append(new RoomView({
-        model: roomModel
-      }).render().el);
+      // this.$el.find('#editor-content>div').append(new RoomView({
+      //   model: roomModel
+      // }).render().el);
 
       editorModel.set('currentTool', 'select');
 

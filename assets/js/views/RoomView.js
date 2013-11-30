@@ -9,11 +9,29 @@ define('views/RoomView', function() {
     tileCanvas: null,
     attrCanvas: null,
 
+    events: {
+      'click': '_handleClick',
+      'mousemove': '_handleMousemove'
+    },
+
     initialize: function(options) {
       options = options || {};
 
       this.delegate = options.delegate;
       this.model = options.model;
+    },
+
+    _handleClick: function(evt) {
+      var localX = evt.offsetX,
+        localY   = evt.offsetY,
+        tileX    = Math.floor(localX / this.model.gridsize),
+        tileY    = Math.floor(localY / this.model.gridsize);
+      
+      console.log('Clicked room.', this.model, tileX, tileY);
+    },
+
+    _handleMousemove: function(evt) {
+      console.log('Mouse is moving.');
     },
 
     render: function() {
