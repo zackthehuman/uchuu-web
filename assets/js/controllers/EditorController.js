@@ -63,7 +63,7 @@ define('controllers/EditorController', [
       console.log('Mouse down in a room', roomView);
       // TODO: Depending on tool selected, begin an edit
       this._startUndoOperation();
-      this._performToolOperation(roomView, pX, pY);
+      this._performToolOperation(roomView, pX, pY, 'mousedown');
     },
 
     onRoomMouseup: function(roomView, pX, pY) {
@@ -75,11 +75,29 @@ define('controllers/EditorController', [
     onRoomMousemove: function(roomView, pX, pY) {
       console.log('Mouse moved in a room', roomView);
       // TODO: Depending on tool selected, record the edits tile by tile
-      this._performToolOperation(roomView, pX, pY);
+      this._performToolOperation(roomView, pX, pY, 'mousemove');
     },
 
-    _performToolOperation: function(roomView, pX, pY) {
-
+    _performToolOperation: function(roomView, pX, pY, eventType) {
+      if(this.editorModel) {
+        switch(this.editorModel.get('currentTool')) {
+          case 'unset':
+          case 'select':
+          case 'move':
+          case 'eyedropper':
+            break;
+          case 'pencil':
+            console.log('Pencil action being taken at ' + pX + ', ' + pY);
+            break;
+          case 'floodfill':
+            if(eventType && eventType === 'mousedown') {
+              console.log('Floodfill action being taken at ' + pX + ', ' + pY);
+            }
+            break;
+          default: 
+            break;
+        }
+      }
     },
 
     _startUndoOperation: function() {
