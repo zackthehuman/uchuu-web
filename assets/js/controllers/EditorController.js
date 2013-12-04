@@ -31,6 +31,10 @@ define('controllers/EditorController', [
         }
       }
 
+      this._redoBuffer = [];
+      this._undoBuffer = [];
+      this._currentUndoable = null;
+
       this._createRoomViews(this.stageModel);
 
       _.each(this.roomViews, _.bind(function(view) {
@@ -55,21 +59,37 @@ define('controllers/EditorController', [
       }
     },
 
-    onRoomMousedown: function(roomView) {
+    onRoomMousedown: function(roomView, pX, pY) {
       console.log('Mouse down in a room', roomView);
       // TODO: Depending on tool selected, begin an edit
+      this._startUndoOperation();
+      this._performToolOperation(roomView, pX, pY);
     },
 
-    onRoomMouseup: function(roomView) {
+    onRoomMouseup: function(roomView, pX, pY) {
       console.log('Mouse up in a room', roomView);
       // TODO: Depending on tool selected, complete an edit
+      this._commitUndoOperation();
+    },
+
+    onRoomMousemove: function(roomView, pX, pY) {
+      console.log('Mouse moved in a room', roomView);
+      // TODO: Depending on tool selected, record the edits tile by tile
+      this._performToolOperation(roomView, pX, pY);
+    },
+
+    _performToolOperation: function(roomView, pX, pY) {
 
     },
 
-    onRoomMousemove: function(roomView) {
-      console.log('Mouse moved in a room', roomView);
-      // TODO: Depending on tool selected, record the edits tile by tile
+    _startUndoOperation: function() {
+      this._redoBuffer.length = 0;
+    },
 
+    _commitUndoOperation: function() {
+      if(this._currentUndoable) {
+        this._undoBuffer.push(this._currentUndoable);
+      }
     }
 
   });

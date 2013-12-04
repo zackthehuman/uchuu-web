@@ -35,19 +35,19 @@ define('views/RoomView', function() {
 
     _handleMousemove: function(evt) {
       if(this.delegate) {
-        this.delegate.onRoomMousemove(this, evt);
+        this.delegate.onRoomMousemove(this, evt.offsetX, evt.offsetY);
       }
     },
 
     _handleMousedown: function(evt) {
       if(this.delegate) {
-        this.delegate.onRoomMousedown(this, evt);
+        this.delegate.onRoomMousedown(this, evt.offsetX, evt.offsetY);
       }
     },
 
     _handleMouseup: function(evt) {
       if(this.delegate) {
-        this.delegate.onRoomMouseup(this, evt);
+        this.delegate.onRoomMouseup(this, evt.offsetX, evt.offsetY);
       }
     },
 
