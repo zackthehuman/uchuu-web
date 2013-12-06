@@ -4,6 +4,10 @@ define('controllers/TilesetController', function() {
   var TilesetController = Backbone.View.extend({
     initialize: function(options) {
       this.editorModel = options.editorModel;
+
+      if(this.editorModel) {
+        this.listenTo(this.editorModel, 'change:currentTile', _.bind(this._handleCurrentTileChanged));
+      }
     },
 
     onTileClicked: function(sourceView, evt) {
@@ -18,10 +22,14 @@ define('controllers/TilesetController', function() {
 
         if(tileIndex !== this.selectedTileIndex) {
           if(this.editorModel) {
-            this.editorModel.set('currentTile', tileIndex);
+            this.editorModel.set('currentTile', tileIndex, { poop: true });
           }
         }
       }
+    },
+
+    _handleCurrentTileChanged: function(model) {
+      // console.log(arguments);
     }
   });
 

@@ -511,6 +511,24 @@ define('uchuu', [
           transitions: new TransitionRegionCollection(attributes.transitions)
         };
       }
+    },
+
+    setTileAtXY: function(newValue, tX, tY) {
+      var tiles = this.get('tile');
+
+      tiles[(tY * this.get('width')) + tX] = newValue;
+
+      this.trigger('tileChanged', { 
+        newValue: newValue,
+        tileX: tX,
+        tileY: tY
+      });
+    },
+
+    getTileAtXY: function(tX, tY) {
+      var tiles = this.get('tile');
+
+      return tiles[(tY * this.get('width')) + tX];
     }
   });
 

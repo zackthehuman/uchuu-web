@@ -22,6 +22,15 @@ define('views/RoomView', function() {
 
       this.delegate = options.delegate;
       this.model = options.model;
+
+      if(this.model) {
+        this.listenTo(this.model, 'tileChanged', _.bind(this._drawTileChange, this));
+        this.listenTo(this.model, 'change:x', _.bind(this._updatePosition, this));
+      }
+    },
+
+    _updatePosition: function(roomModel, newCoord) {
+      console.log('Room\'s position changed!', newCoord);
     },
 
     _handleClick: function(evt) {
@@ -49,6 +58,13 @@ define('views/RoomView', function() {
       if(this.delegate) {
         this.delegate.onRoomMouseup(this, evt.offsetX, evt.offsetY);
       }
+    },
+
+    _drawTileChange: function(evt) {
+      var pixelX = evt.tileX * this.model.gridsize,
+        pixelY = evt.tileY * this.model.gridsize;
+
+      this.drawTile(evt.newValue, pixelX, pixelY);
     },
 
     render: function() {

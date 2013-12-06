@@ -60,22 +60,26 @@ define('controllers/EditorController', [
     },
 
     onRoomMousedown: function(roomView, pX, pY) {
-      console.log('Mouse down in a room', roomView);
-      // TODO: Depending on tool selected, begin an edit
+      // console.log('Mouse down in a room', roomView);
+
+      if(this._currentUndoable) {
+        this._commitUndoOperation();
+      }
+
       this._startUndoOperation();
-      this._performToolOperation(roomView, pX, pY, 'mousedown');
+      this._performToolOperation(roomView, pX, pY, 'start');
     },
 
     onRoomMouseup: function(roomView, pX, pY) {
-      console.log('Mouse up in a room', roomView);
+      // console.log('Mouse up in a room', roomView);
       // TODO: Depending on tool selected, complete an edit
       this._commitUndoOperation();
+      this._stopUndoOperation();
     },
 
     onRoomMousemove: function(roomView, pX, pY) {
-      console.log('Mouse moved in a room', roomView);
-      // TODO: Depending on tool selected, record the edits tile by tile
-      this._performToolOperation(roomView, pX, pY, 'mousemove');
+      // console.log('Mouse moved in a room', roomView);
+      this._performToolOperation(roomView, pX, pY, 'step');
     },
 
     _performToolOperation: function(roomView, pX, pY, eventType) {
@@ -84,14 +88,25 @@ define('controllers/EditorController', [
           case 'unset':
           case 'select':
           case 'move':
+            break;
           case 'eyedropper':
+            if(this._currentUndoable) {
+              this._doEyedropperTool(roomView, pX, pY);
+            }
             break;
           case 'pencil':
-            console.log('Pencil action being taken at ' + pX + ', ' + pY);
+            if(this._currentUndoable) {
+              this._currentUndoable.changes.push(
+                this._doPencilTool(roomView, pX, pY));
+            }
             break;
           case 'floodfill':
-            if(eventType && eventType === 'mousedown') {
+            if(eventType && eventType === 'start') {
               console.log('Floodfill action being taken at ' + pX + ', ' + pY);
+
+              if(this._currentUndoable) {
+                this._currentUndoable.changes = this._doFloodfillTool(roomView, pX, pY);
+              }
             }
             break;
           default: 
@@ -100,14 +115,143 @@ define('controllers/EditorController', [
       }
     },
 
+    _doEyedropperTool: function(roomView, pX, pY) {
+      var tX,
+        tY,
+        tileOffset,
+        tiles;
+
+      if(roomView && roomView.model && this.editorModel) {
+        tX = Math.floor(pX / roomView.model.gridsize);
+        tY = Math.floor(pY / roomView.model.gridsize);
+        tileOffset = (tY * roomView.model.get('width')) + tX;
+        tiles = roomView.model.get('tile');
+
+        this.editorModel.set('currentTile', tiles[tileOffset]);
+      }
+    },
+
+    _doPencilTool: function(roomView, pX, pY) {
+      var tX,
+        tY,
+        newTileValue,
+        tileIndexAtXY,
+        tileOffset,
+        tiles,
+        attrs,
+        change = null;
+
+      if(roomView && roomView.model && this.editorModel) {
+        tX = Math.floor(pX / roomView.model.gridsize);
+        tY = Math.floor(pY / roomView.model.gridsize);
+        tileOffset = (tY * roomView.model.get('width')) + tX;
+        tiles = roomView.model.get('tile');
+        attrs = roomView.model.get('attr');
+
+        switch(this.editorModel.get('editingMode')) {
+          case 'tile':
+            tileIndexAtXY = tiles[tileOffset];
+            newTileValue = this.editorModel.get('currentTile');
+
+            if(tileIndexAtXY !== newTileValue) {
+              change = {
+                type: 'tile',
+                oldValue: tileIndexAtXY,
+                newValue: newTileValue,
+                tileX: tX,
+                tileY: tY,
+                roomView: roomView
+              };
+
+              roomView.model.setTileAtXY(change.newValue, change.tileX, change.tileY);
+            }
+            // console.log('Tile at (' + tX + ', ' + tY + '): ' + tileIndexAtXY);
+          break;
+          case 'attribute':
+          break;
+          default:
+          break;
+        }
+      }
+
+      return change;
+    },
+
+    _doFloodfillTool: function(roomView, pX, pY, fromValue, toValue, changes) {
+      var width,
+        height,
+        tileOffset,
+        oldTileValue,
+        tX,
+        tY,
+        change;
+
+      changes = changes || [];
+      width = roomView.model.get('width');
+      height = roomView.model.get('height');
+      tX = Math.floor(pX / roomView.model.gridsize);
+      tY = Math.floor(pY / roomView.model.gridsize);
+
+      if(tX < 0 || tY < 0 || tX >= width || tY >= height) {
+        return;
+      }
+
+      oldTileValue = roomView.model.getTileAtXY(tX, tY);
+
+      if(fromValue === undefined) {
+        fromValue = oldTileValue;
+      }
+
+      if(toValue === undefined) {
+        toValue = this.editorModel.get('currentTile');
+      }
+
+      if(oldTileValue === fromValue && oldTileValue !== toValue) {
+        change = {
+          type: 'floodfill',
+          oldValue: fromValue,
+          newValue: toValue,
+          tileX: tX,
+          tileY: tY,
+          roomView: roomView
+        };
+
+        roomView.model.setTileAtXY(change.newValue, change.tileX, change.tileY);
+
+        changes.push(change);
+
+        // Top
+        this._doFloodfillTool(roomView, pX, pY - 16, fromValue, toValue, changes);
+        // Right
+        this._doFloodfillTool(roomView, pX + 16, pY, fromValue, toValue, changes);
+        // Bottom
+        this._doFloodfillTool(roomView, pX, pY + 16, fromValue, toValue, changes);
+        // Left
+        this._doFloodfillTool(roomView, pX - 16, pY, fromValue, toValue, changes);
+      }
+
+      return changes;
+    },
+
     _startUndoOperation: function() {
       this._redoBuffer.length = 0;
+      this._currentUndoable = { changes: [] };
     },
 
     _commitUndoOperation: function() {
       if(this._currentUndoable) {
-        this._undoBuffer.push(this._currentUndoable);
+        this._currentUndoable.changes = _.compact(this._currentUndoable.changes);
+
+        if(this._currentUndoable.changes.length) {
+          this._undoBuffer.push(this._currentUndoable);
+
+          console.log('Commited undoable with ' + this._currentUndoable.changes.length + ' change(s).');
+        }
       }
+    },
+
+    _stopUndoOperation: function() {
+      this._currentUndoable = null;
     }
 
   });
