@@ -1,4 +1,27 @@
 define('views/RoomView', function() {
+  var KEY_UP = 38,
+    KEY_RIGHT = 39,
+    KEY_DOWN = 40,
+    KEY_LEFT = 37;
+
+  var TransitionRegionView = Backbone.View.extend({
+    className: 'transition-region',
+
+    render: function() {
+      if(this.model) {
+        this.$el.css({
+          width: this.model.get('width') * 16,
+          height: this.model.get('height') * 16,
+          left: this.model.get('x') * 16,
+          top: this.model.get('y') * 16,
+          position: "absolute"
+        }).addClass('direction-' + this.model.get('direction'));
+      }
+
+      return this;
+    }
+  });
+
   var RoomView = Backbone.View.extend({
     className: 'room',
 
@@ -9,12 +32,14 @@ define('views/RoomView', function() {
     tileCanvas: null,
     attrCanvas: null,
     cameraBounds: null,
+    transitionRegions: null,
 
     events: {
       'click':     '_handleClick',
       'mousemove': '_handleMousemove',
       'mousedown': '_handleMousedown',
-      'mouseup':   '_handleMouseup'
+      'mouseup':   '_handleMouseup',
+      'keydown':   '_handleKeydown'
     },
 
     initialize: function(options) {
@@ -26,11 +51,31 @@ define('views/RoomView', function() {
       if(this.model) {
         this.listenTo(this.model, 'tileChanged', _.bind(this._drawTileChange, this));
         this.listenTo(this.model, 'change:x', _.bind(this._updatePosition, this));
+        this.listenTo(this.model, 'change:y', _.bind(this._updatePosition, this));
       }
     },
 
     _updatePosition: function(roomModel, newCoord) {
-      console.log('Room\'s position changed!', newCoord);
+      var tileX,
+        tileY,
+        tileWidth,
+        tileHeight,
+        gridSize;
+
+      if(this.model) {
+        tileWidth = this.model.get('width');
+        tileHeight = this.model.get('height');
+        tileX = this.model.get('x');
+        tileY = this.model.get('y');
+        gridSize = this.model.gridsize;
+
+        this.$el.css({
+          width: tileWidth * gridSize,
+          height: tileHeight * gridSize,
+          left: tileX * gridSize,
+          top: tileY * gridSize
+        });
+      }
     },
 
     _handleClick: function(evt) {
@@ -60,6 +105,26 @@ define('views/RoomView', function() {
       }
     },
 
+    _handleKeydown: function(evt) {
+      switch(evt.which) {
+        case KEY_UP:
+        this.model.set('y', this.model.get('y') - 1);
+        break;
+        case KEY_RIGHT:
+        this.model.set('x', this.model.get('x') + 1);
+        break;
+        case KEY_DOWN:
+        this.model.set('y', this.model.get('y') + 1);
+        break;
+        case KEY_LEFT:
+        this.model.set('x', this.model.get('x') - 1);
+        break;
+      }
+
+      evt.preventDefault();
+      evt.stopPropagation();
+    },
+
     _drawTileChange: function(evt) {
       var pixelX = evt.tileX * this.model.gridsize,
         pixelY = evt.tileY * this.model.gridsize;
@@ -84,11 +149,13 @@ define('views/RoomView', function() {
         this._renderTileLayer();
         this._renderAttrLayer();
         this._renderCameraBounds();
+        this._renderTransitionRegions();
 
         this.$el.empty()
           .append(this.tileCanvas)
           .append(this.attrCanvas)
-          .append(this.cameraBounds);
+          .append(this.cameraBounds)
+          .append(this.transitionRegions);
 
         this.$el.css({
           width: tileWidth * gridSize,
@@ -98,6 +165,8 @@ define('views/RoomView', function() {
           position: 'absolute',
           zIndex: parseInt(this.model.get('id'), 10)
         });
+
+        this.$el.attr('tabIndex', parseInt(this.model.get('id'), 10));
       }
 
       return this;
@@ -207,7 +276,15 @@ define('views/RoomView', function() {
     },
 
     _renderTransitionRegions: function() {
+      var transitions = this.model.subModels.transitions;
 
+      this.transitionRegions = [];
+
+      transitions.each(function(transition) {
+        this.transitionRegions.push(new TransitionRegionView({
+          model: transition
+        }).render().el);
+      }, this);
     },
 
     drawTile: function(tileIndex, x, y) {

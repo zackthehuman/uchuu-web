@@ -113,8 +113,24 @@ h1, h2, h3, h4, h5, h6 {
 
 .transition-region {
   outline: 1px solid rgba(0, 255, 0, 1.0);
-  background: rgba(32, 255, 32, 0.2);
+  background: rgba(32, 32, 32, 0.6) repeat;
   display: none;
+}
+
+.transition-region.direction-up {
+  background-image: url(../images/transition-up-16x16.png);
+}
+
+.transition-region.direction-right {
+  background-image: url(../images/transition-right-16x16.png);
+}
+
+.transition-region.direction-down {
+  background-image: url(../images/transition-down-16x16.png);
+}
+
+.transition-region.direction-left {
+  background-image: url(../images/transition-left-16x16.png);
 }
 
 .show-transitions .transition-region {
