@@ -1,7 +1,7 @@
 require(['uchuu'], function(uchuu) {
 
   $(document).ready(function() {
-    $.when(uchuu.loadStage('assets/stages/map-test6.json')).done(function(stage) {
+    $.when(uchuu.loadStage('assets/stages/map-pearlman.json')).done(function(stage) {
       var uchuuApp = new uchuu.UchuuApp({
         el: $('#editor'),
         stage: stage

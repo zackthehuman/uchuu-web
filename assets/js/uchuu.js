@@ -1,13 +1,17 @@
 /*global console */
 
 define('uchuu', [
+  'mixins/SubModelSerializerMixin',
   'models/EditorModel',
+  'models/RoomModel',
   'controllers/TilesetController',
   'controllers/ToolController',
   'controllers/EditorController',
   'views/TilesetView'
 ], function(
+  SubModelSerializerMixin,
   EditorModel,
+  RoomModel,
   TilesetController,
   ToolController,
   EditorController,
@@ -340,35 +344,6 @@ define('uchuu', [
   });
 
   /**
-   * Forces any keys in the subModel property to be serialized and override
-   * keys with the same name in the JSON output. Useful for when subobjects
-   * are managed in collections but need to be part of the JSON output of a
-   * parent model.
-   * 
-   * @mixin {SubModelSerializerMixin}
-   */
-  var SubModelSerializerMixin = {
-    toJSON: function() {
-      var json = Backbone.Model.prototype.toJSON.apply(this),
-        subModels;
-
-      if(this.subModels) {
-        subModels = _.clone(this.subModels);
-
-        // Serialize the submodels
-        _.each(subModels, function(value, key, list) {
-          list[key] = value.toJSON();
-        });
-
-        json = _.omit(json, _.keys(this.subModels));
-        json = _.extend(json, subModels);
-      }
-
-      return json;
-    }
-  };
-
-  /**
    * A model backing the entire map. Contains a collection of Rooms and other
    * attributes.
    *
@@ -429,110 +404,6 @@ define('uchuu', [
     DEFAULT_CAMERA_BOUND_HEIGHT = DEFAULT_ROOM_HEIGHT - DEFAULT_ROOM_PADDING,
     DEFAULT_CAMERA_BOUND_X      = 1,
     DEFAULT_CAMERA_BOUND_Y      = 1;
-
-  /**
-   * Model for an individual room. Contains collections of enemies, items, and
-   * transitions. Also contains all of the tile and collision information.
-   * 
-   * @class RoomModel
-   * @extends {Backbone.Model}
-   * @mixes {SubModelSerializerMixin}
-   */
-  var RoomModel = Backbone.Model.extend({
-    stage: {},
-    gridsize: 16,
-    defaults: {
-      "id": 0,
-      "x": 0,
-      "y": 0,
-      "width": DEFAULT_ROOM_WIDTH,
-      "height": DEFAULT_ROOM_HEIGHT,
-      "tile": [
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-      ],
-      "attr": [
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-      ],
-      "cameraBounds": {
-        "x": DEFAULT_CAMERA_BOUND_X,
-        "y": DEFAULT_CAMERA_BOUND_Y,
-        "width": DEFAULT_CAMERA_BOUND_WIDTH,
-        "height": DEFAULT_CAMERA_BOUND_HEIGHT
-      },
-      "enemies": [],
-      "items": [],
-      "transitions": [],
-      "doors": {}
-    },
-
-    initialize: function(attributes, options) {
-      if(options){
-        if(options.gridsize) {
-          this.gridsize = options.gridsize;
-        }
-
-        if(options.stage) {
-          this.stage = options.stage;          
-        }
-      }
-
-      if(attributes) {
-        this.subModels = {
-          enemies: new EnemyCollection(attributes.enemies),
-          items: new ItemCollection(attributes.items),
-          transitions: new TransitionRegionCollection(attributes.transitions)
-        };
-      }
-    },
-
-    setTileAtXY: function(newValue, tX, tY) {
-      var tiles = this.get('tile');
-
-      tiles[(tY * this.get('width')) + tX] = newValue;
-
-      this.trigger('tileChanged', { 
-        newValue: newValue,
-        tileX: tX,
-        tileY: tY
-      });
-    },
-
-    getTileAtXY: function(tX, tY) {
-      var tiles = this.get('tile');
-
-      return tiles[(tY * this.get('width')) + tX];
-    }
-  });
-
-  _.extend(RoomModel.prototype, SubModelSerializerMixin);
   
   var RoomCollection = Backbone.Collection.extend({
     model: RoomModel
