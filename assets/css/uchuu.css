@@ -1,3 +1,36 @@
+@keyframes red-smooth-flash {
+  0% {
+    outline: 3px solid #f22;
+  }
+  100% {
+    outline: 3px solid #622;
+  }
+}
+@-moz-keyframes red-smooth-flash {
+  0% {
+    outline: 3px solid #f22;
+  }
+  100% {
+    outline: 3px solid #622;
+  }
+}
+@-webkit-keyframes red-smooth-flash {
+  0% {
+    outline: 3px solid #f22;
+  }
+  100% {
+    outline: 3px solid #622;
+  }
+}
+@-o-keyframes red-smooth-flash {
+  0% {
+    outline: 3px solid #f22;
+  }
+  100% {
+    outline: 3px solid #622;
+  }
+}
+
 html,
 body {
   height: 100%;
@@ -118,7 +151,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .transition-region:focus {
-  outline-color: #f00;
+  animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
+  -moz-animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
+  -webkit-animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
+  -o-animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
 }
 
 .transition-region.direction-up {
