@@ -4,7 +4,13 @@ define('controllers/EditorController', [
 ], function(
   RoomView
 ) {
-  var EditorController = Backbone.View.extend({
+  var KEY_UP = 38,
+    KEY_RIGHT = 39,
+    KEY_DOWN = 40,
+    KEY_LEFT = 37,
+    EditorController;
+
+  EditorController = Backbone.View.extend({
     delegate: null,
 
     editorModel: null,
@@ -80,6 +86,54 @@ define('controllers/EditorController', [
     onRoomMousemove: function(roomView, pX, pY) {
       // console.log('Mouse moved in a room', roomView);
       this._performToolOperation(roomView, pX, pY, 'step');
+    },
+
+    onRoomKeydown: function(roomView, evt) {
+      if(roomView && evt) {
+        if(this.editorModel.get('currentTool') === 'move') {
+          switch(evt.which) {
+            case KEY_UP:
+            roomView.model.set('y', roomView.model.get('y') - 1);
+            break;
+            case KEY_RIGHT:
+            roomView.model.set('x', roomView.model.get('x') + 1);
+            break;
+            case KEY_DOWN:
+            roomView.model.set('y', roomView.model.get('y') + 1);
+            break;
+            case KEY_LEFT:
+            roomView.model.set('x', roomView.model.get('x') - 1);
+            break;
+          }
+
+          evt.preventDefault();
+          evt.stopPropagation();
+        }
+      }
+    },
+
+    onTransitionKeydown: function(transitionView, evt) {
+      if(transitionView && evt) {
+        if(this.editorModel.get('currentTool') === 'move') {
+          switch(evt.which) {
+            case KEY_UP:
+            transitionView.model.set('y', transitionView.model.get('y') - 1);
+            break;
+            case KEY_RIGHT:
+            transitionView.model.set('x', transitionView.model.get('x') + 1);
+            break;
+            case KEY_DOWN:
+            transitionView.model.set('y', transitionView.model.get('y') + 1);
+            break;
+            case KEY_LEFT:
+            transitionView.model.set('x', transitionView.model.get('x') - 1);
+            break;
+          }
+
+          evt.preventDefault();
+          evt.stopPropagation();
+        }
+      }
     },
 
     _performToolOperation: function(roomView, pX, pY, eventType) {

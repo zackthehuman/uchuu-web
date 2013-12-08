@@ -1,11 +1,56 @@
 define('views/RoomView', function() {
-  var KEY_UP = 38,
-    KEY_RIGHT = 39,
-    KEY_DOWN = 40,
-    KEY_LEFT = 37;
 
   var TransitionRegionView = Backbone.View.extend({
     className: 'transition-region',
+
+    events: {
+      'click': '_handleClick',
+      'keydown': '_handleKeydown'
+    },
+
+    initialize: function(options) {
+      this.delegate = options.delegate;
+      
+      if(this.model) {
+        this.listenTo(this.model, 'change:x', _.bind(this._updatePosition, this));
+        this.listenTo(this.model, 'change:y', _.bind(this._updatePosition, this));
+      }      
+    },
+
+    _updatePosition: function(transitionModel, newCoord) {
+      var tileX,
+        tileY,
+        tileWidth,
+        tileHeight,
+        gridSize;
+
+      if(transitionModel) {
+        tileWidth = transitionModel.get('width');
+        tileHeight = transitionModel.get('height');
+        tileX = transitionModel.get('x');
+        tileY = transitionModel.get('y');
+        gridSize = 16;
+
+        this.$el.css({
+          width: tileWidth * gridSize,
+          height: tileHeight * gridSize,
+          left: tileX * gridSize,
+          top: tileY * gridSize
+        });
+      }
+    },
+
+    _handleClick: function(evt) {
+      console.log('Clicked on a transition-region!');
+    },
+
+    _handleKeydown: function(evt) {
+      if(this.delegate) {
+        if(this.delegate.onTransitionKeydown) {
+          this.delegate.onTransitionKeydown(this, evt);
+        }
+      }
+    },
 
     render: function() {
       if(this.model) {
@@ -16,6 +61,8 @@ define('views/RoomView', function() {
           top: this.model.get('y') * 16,
           position: "absolute"
         }).addClass('direction-' + this.model.get('direction'));
+
+        this.$el.attr('tabIndex', 100);
       }
 
       return this;
@@ -106,23 +153,9 @@ define('views/RoomView', function() {
     },
 
     _handleKeydown: function(evt) {
-      switch(evt.which) {
-        case KEY_UP:
-        this.model.set('y', this.model.get('y') - 1);
-        break;
-        case KEY_RIGHT:
-        this.model.set('x', this.model.get('x') + 1);
-        break;
-        case KEY_DOWN:
-        this.model.set('y', this.model.get('y') + 1);
-        break;
-        case KEY_LEFT:
-        this.model.set('x', this.model.get('x') - 1);
-        break;
+      if(this.delegate) {
+        this.delegate.onRoomKeydown(this, evt);
       }
-
-      evt.preventDefault();
-      evt.stopPropagation();
     },
 
     _drawTileChange: function(evt) {
@@ -282,7 +315,8 @@ define('views/RoomView', function() {
 
       transitions.each(function(transition) {
         this.transitionRegions.push(new TransitionRegionView({
-          model: transition
+          model: transition,
+          delegate: this.delegate
         }).render().el);
       }, this);
     },

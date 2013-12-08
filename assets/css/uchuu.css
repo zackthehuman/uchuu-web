@@ -117,6 +117,10 @@ h1, h2, h3, h4, h5, h6 {
   display: none;
 }
 
+.transition-region:focus {
+  outline-color: #f00;
+}
+
 .transition-region.direction-up {
   background-image: url(../images/transition-up-16x16.png);
 }
