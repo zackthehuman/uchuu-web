@@ -54,6 +54,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2000 !important;
 }
 
+.room:focus {
+  animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
+  -moz-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
+  -webkit-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
+  -o-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
+}
+
 #toolbar {
   position: absolute;
   top: 0px;
@@ -71,6 +78,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #toolbar fieldset {
   display: inline-block;
+  border: 0;
 }
 
 #status {
@@ -151,10 +159,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .transition-region:focus {
-  animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
-  -moz-animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
-  -webkit-animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
-  -o-animation: red-smooth-flash 2s linear -2s infinite alternate forwards;
+  animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
+  -moz-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
+  -webkit-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
+  -o-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
 }
 
 .transition-region.direction-up {
