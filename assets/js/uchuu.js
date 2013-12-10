@@ -287,6 +287,13 @@ define('uchuu', [
         el: $('#editor-content')
       });
 
+      // Add in makeshift undo stuff
+      jwerty.key('ctrl+Z/cmd+Z', function() {
+        if(editorController && editorController.canUndo()) {
+          editorController.performUndo();
+        }
+      });
+
       var tilesetController = new TilesetController({
         delegate: this,
         editorModel: editorModel

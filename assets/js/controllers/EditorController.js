@@ -48,6 +48,36 @@ define('controllers/EditorController', [
       }, this));
     },
 
+    canUndo: function() {
+      console.log('EditorController::canUndo');
+      return this._undoBuffer.length > 0;
+    },
+
+    canRedo: function() {
+      console.log('EditorController::canRedo');
+      return this._redoBuffer.length > 0;
+    },
+
+    performUndo: function() {
+      // TODO: Implement!
+      console.log('EditorController::performUndo');
+
+      var undoable = this._undoBuffer.pop();
+
+      if(undoable) {
+        switch(undoable.type) {
+          case 'pencil':
+          console.log('Undoing pencil change!');
+          break;
+          case 'floodfill':
+          console.log('Undoing floodfill change!');
+          break;
+          default:
+          break;
+        }
+      }
+    },
+
     _createRoomViews: function(stageModel) {
       if(stageModel) {
         this.roomViews = [];
@@ -152,6 +182,7 @@ define('controllers/EditorController', [
             if(this._currentUndoable) {
               this._currentUndoable.changes.push(
                 this._doPencilTool(roomView, pX, pY));
+              this._currentUndoable.type = 'pencil';
             }
             break;
           case 'floodfill':
@@ -160,6 +191,7 @@ define('controllers/EditorController', [
 
               if(this._currentUndoable) {
                 this._currentUndoable.changes = this._doFloodfillTool(roomView, pX, pY);
+                this._currentUndoable.type = 'floodfill';
               }
             }
             break;
@@ -262,7 +294,7 @@ define('controllers/EditorController', [
 
       if(oldTileValue === fromValue && oldTileValue !== toValue) {
         change = {
-          type: 'floodfill',
+          type: 'tile',
           oldValue: fromValue,
           newValue: toValue,
           tileX: tX,
