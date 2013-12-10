@@ -59,19 +59,41 @@ define('controllers/EditorController', [
     },
 
     performUndo: function() {
+      this._performUndoOrRedo(true);
+    },
+
+    performRedo: function() {
+      this._performUndoOrRedo(false);
+    },
+
+    _performUndoOrRedo: function(isUndo) {
       // TODO: Implement!
-      console.log('EditorController::performUndo');
+      console.log('EditorController::_performUndoOrRedo');
 
-      var undoable = this._undoBuffer.pop();
+      var doable = this._undoBuffer.pop();
 
-      if(undoable) {
-        switch(undoable.type) {
+      if(doable) {
+        switch(doable.type) {
           case 'pencil':
-          console.log('Undoing pencil change!');
-          break;
           case 'floodfill':
-          console.log('Undoing floodfill change!');
+            _.each(doable.changes, function(change, index, changes) {
+              var roomView = change.roomView,
+                roomModel;
+
+              if(roomView) {
+                roomModel = roomView.model;
+
+                if(roomModel) {
+                  if(change.type === 'tile' || change.type === 'attribute') {
+                    this._performTileChange(change, isUndo);
+                  }
+                }
+              }
+            }, this);
+
+            this._redoBuffer.push(doable);
           break;
+
           default:
           break;
         }
@@ -241,7 +263,7 @@ define('controllers/EditorController', [
 
             if(tileIndexAtXY !== newTileValue) {
               change = {
-                type: 'tile',
+                type: 'tile', // TODO: Support "attribute" types here too
                 oldValue: tileIndexAtXY,
                 newValue: newTileValue,
                 tileX: tX,
@@ -249,9 +271,8 @@ define('controllers/EditorController', [
                 roomView: roomView
               };
 
-              roomView.model.setTileAtXY(change.newValue, change.tileX, change.tileY);
+              this._performTileChange(change, false);
             }
-            // console.log('Tile at (' + tX + ', ' + tY + '): ' + tileIndexAtXY);
           break;
           case 'attribute':
           break;
@@ -294,7 +315,7 @@ define('controllers/EditorController', [
 
       if(oldTileValue === fromValue && oldTileValue !== toValue) {
         change = {
-          type: 'tile',
+          type: 'tile', // TODO: Support "attribute" types here too
           oldValue: fromValue,
           newValue: toValue,
           tileX: tX,
@@ -302,7 +323,7 @@ define('controllers/EditorController', [
           roomView: roomView
         };
 
-        roomView.model.setTileAtXY(change.newValue, change.tileX, change.tileY);
+        this._performTileChange(change, false);
 
         changes.push(change);
 
@@ -338,6 +359,43 @@ define('controllers/EditorController', [
 
     _stopUndoOperation: function() {
       this._currentUndoable = null;
+    },
+
+    /**
+     * Takes a 'tile change' object and performs the change. Is also capable of
+     * reversing the change (undo).
+     *
+     * @param  {Object}  change - a tile change encoded in an object
+     * @param  {Boolean} isUndo - a flag indicating whether the operation should
+     *                            be performed in reverse
+     * @return {Void}
+     */
+    _performTileChange: function(change, isUndo) {
+      var roomModel;
+
+      if(change) {
+        if(change.roomView) {
+          roomModel = change.roomView.model;
+
+          if(roomModel) {
+            if(change.type === 'tile') {
+              roomModel.setTileAtXY(
+                isUndo ? change.oldValue : change.newValue,
+                change.tileX,
+                change.tileY
+              );
+            } else if(change.type === 'attribute') {
+              // TODO: Implement this
+              //
+              // roomModel.setAttributeAtXY(
+              //   isUndo ? change.oldValue : change.newValue,
+              //   change.tileX,
+              //   change.tileY
+              // );
+            }
+          }
+        }
+      }
     }
 
   });
