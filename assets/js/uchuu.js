@@ -294,6 +294,12 @@ define('uchuu', [
         }
       });
 
+      jwerty.key('ctrl+shift+Z/cmd+shift+Z', function() {
+        if(editorController && editorController.canRedo()) {
+          editorController.performRedo();
+        }
+      });
+
       var tilesetController = new TilesetController({
         delegate: this,
         editorModel: editorModel

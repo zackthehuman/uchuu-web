@@ -257,6 +257,13 @@ define('controllers/EditorController', [
         tiles = roomView.model.get('tile');
         attrs = roomView.model.get('attr');
 
+        // If the editing location is outside of the map then bail
+        if(tX < 0 || tX >= roomView.model.get('width')) {
+          if(tY < 0 || tY >= roomView.model.get('height')) {
+            return null;
+          }
+        }
+
         switch(this.editorModel.get('editingMode')) {
           case 'tile':
             tileIndexAtXY = tiles[tileOffset];
@@ -355,7 +362,7 @@ define('controllers/EditorController', [
           this.editorModel.undoBuffer.add(this._currentUndoable);
           // this.editorModel.set('undoBuffer', this._undoBuffer);
 
-          console.log('Commited undoable with ' + this._currentUndoable.changes.length + ' change(s).');
+          console.log('Committed undoable with ' + this._currentUndoable.changes.length + ' change(s).', this._currentUndoable.changes);
         }
       }
     },
