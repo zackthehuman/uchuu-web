@@ -13,7 +13,8 @@ http.createServer(function(request, response) {
 
   var uri = url.parse(request.url),
     query = uri.query,
-    filename = null;
+    filename = null,
+    filedata = {};
 
   //console.log(uri);
 
@@ -56,6 +57,52 @@ http.createServer(function(request, response) {
         response.end();
       });
     });
+  } else if(uri.pathname === '/save') {
+    // filename = path.join(contentRoot, querystring.unescape(query.split('=')[1]));
+    console.log("Saving...", request.method);
+
+    if(request.method == 'POST') {
+      var body = '';
+      
+      request.on('data', function (data) {
+        body += data;
+      });
+
+      request.on('end', function () {
+        var POST = querystring.parse(body),
+          mapData;
+
+        if(POST) {
+          if(POST.mapData) {
+            filename = path.join(contentRoot, POST.path);
+            console.log('Got map data back; saving map... ' + filename);
+
+            mapData = JSON.parse(POST.mapData);
+            mapData = JSON.stringify(mapData, null, 2);
+
+            fs.writeFile(filename + '.test.json', mapData, function(err) {
+              if(err) {
+                console.log('ERROR writing map data to file: ' + err);
+                response.writeHead(500, {'Content-Type': 'application/json'});
+                response.write(JSON.stringify({
+                  status: 'ERROR',
+                  message: err 
+                }));
+                response.end();
+              } else {
+                console.log('File successfully written.');
+
+                response.writeHead(200, {'Content-Type': 'application/json'});
+                response.write(JSON.stringify({
+                  status: 'OK' 
+                }));
+                response.end();
+              }
+            });
+          }
+        }
+      });
+    }
   } else {
     //
     // Serve application file

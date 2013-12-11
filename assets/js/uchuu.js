@@ -42,6 +42,19 @@ define('uchuu', [
     });
   };
 
+  uchuu.save = function(assetPath, data) {
+    console.log('uchuu.save');
+
+    return $.ajax({
+      url: '/save',
+      data: {
+        path: assetPath,
+        mapData: data
+      },
+      type: 'POST'
+    });
+  };
+
   /**
    * Loads a texture by path name and caches it.
    *
@@ -335,6 +348,7 @@ define('uchuu', [
 
       this.listenTo(editorModel, 'change:currentTile', function(model) {
         console.log('Selected tile changed to ' + model.get('currentTile'));
+        uchuu.save('assets/stages/map-pearlman.json', JSON.stringify(global.currentMap.toJSON()));
       });
 
       this.trigger('layoutChanged');
