@@ -38,6 +38,8 @@ define('controllers/ToolController', [
       if(this.editorModel) {
         this.listenTo(this.editorModel, 'change:currentTool', this._handleToolChanged);
         this.listenTo(this.editorModel, 'change:editingMode', this._handleEditModeChanged);
+        this.listenTo(this.editorModel, 'change:undoBuffer', this._handleUndoRedoChanged);
+        this.listenTo(this.editorModel, 'change:redoBuffer', this._handleUndoRedoChanged);
       }
     },
 
@@ -70,6 +72,38 @@ define('controllers/ToolController', [
 
       if(this.toolView) {
         this.toolView.selectToolByName(model.changed.currentTool);
+      }
+    },
+
+    _handleUndoRedoChanged: function(model) {
+      console.log('Undo or redo buffers changed!');
+
+      if(this.toolView) {
+        if(this.editorModel.undoBuffer.length > 0) {
+          this.toolView.enableUndoButton();
+        } else {
+          this.toolView.disableUndoButton();
+        }
+
+        if(this.editorModel.redoBuffer.length > 0) {
+          this.toolView.enableRedoButton();
+        } else {
+          this.toolView.disableRedoButton();
+        }
+      }
+    },
+
+    requestUndo: function() {
+      console.log('requestUndo');
+      if(this.delegate && this.delegate.performUndo) {
+        this.delegate.performUndo();
+      }
+    },
+
+    requestRedo: function() {
+      console.log('requestRedo');
+      if(this.delegate && this.delegate.performRedo) {
+        this.delegate.performRedo();
       }
     }
 

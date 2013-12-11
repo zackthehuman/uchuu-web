@@ -5,7 +5,9 @@ define('views/ToolView', function() {
     events: {
       'click .toggle-transitions,.toggle-camera': '_handleClickToggler',
       'click input[name=mode]': '_handleClickMode',
-      'click input[name=tool]': '_handleChangedTool'
+      'click input[name=tool]': '_handleChangedTool',
+      'click .action-undo': '_handleUndoClick',
+      'click .action-redo': '_handleRedoClick'
     },
 
     togglerMap: {
@@ -66,6 +68,44 @@ define('views/ToolView', function() {
       this.$el
         .find('input:radio[name=tool][value=' + toolName + ']')
           .prop('checked', true);
+    },
+
+    enableUndoButton: function() {
+      this.$el
+        .find('#action-undo').prop('disabled', false);
+    },
+
+    disableUndoButton: function() {
+      this.$el
+        .find('#action-undo').prop('disabled', true);
+    },
+    
+    enableRedoButton: function() {
+      this.$el
+        .find('#action-redo').prop('disabled', false);
+    },
+    
+    disableRedoButton: function() {
+      this.$el
+        .find('#action-redo').prop('disabled', true);
+    },
+
+    _handleUndoClick: function(evt) {
+      console.log('_handleUndoClick');
+      if(this.delegate && this.delegate.requestUndo) {
+        this.delegate.requestUndo();
+        // evt.preventDefault();
+        evt.stopPropagation();
+      }
+    },
+
+    _handleRedoClick: function(evt) {
+      console.log('_handleRedoClick');
+      if(this.delegate && this.delegate.requestRedo) {
+        this.delegate.requestRedo();
+         //evt.preventDefault();
+        evt.stopPropagation();
+      }
     }
   });
 

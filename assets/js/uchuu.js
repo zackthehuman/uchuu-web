@@ -312,7 +312,7 @@ define('uchuu', [
       });
 
       var toolController = new ToolController({
-        delegate: this,
+        delegate: editorController,
         editorModel: editorModel,
         el: $('#toolbar')
       });

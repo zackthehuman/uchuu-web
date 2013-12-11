@@ -37,8 +37,6 @@ define('controllers/EditorController', [
         }
       }
 
-      this._redoBuffer = [];
-      this._undoBuffer = [];
       this._currentUndoable = null;
 
       this._createRoomViews(this.stageModel);
@@ -50,12 +48,12 @@ define('controllers/EditorController', [
 
     canUndo: function() {
       console.log('EditorController::canUndo');
-      return this._undoBuffer.length > 0;
+      return this.editorModel.undoBuffer.length > 0;
     },
 
     canRedo: function() {
       console.log('EditorController::canRedo');
-      return this._redoBuffer.length > 0;
+      return this.editorModel.redoBuffer.length > 0;
     },
 
     performUndo: function() {
@@ -67,12 +65,15 @@ define('controllers/EditorController', [
     },
 
     _performUndoOrRedo: function(isUndo) {
-      // TODO: Implement!
       console.log('EditorController::_performUndoOrRedo');
 
-      var doable = this._undoBuffer.pop();
+      var buffer = (isUndo ? this.editorModel.undoBuffer : this.editorModel.redoBuffer),
+        otherBuffer = (isUndo ? this.editorModel.redoBuffer : this.editorModel.undoBuffer),
+        doable = buffer.pop();
 
       if(doable) {
+        doable = doable.toJSON();
+
         switch(doable.type) {
           case 'pencil':
           case 'floodfill':
@@ -91,7 +92,7 @@ define('controllers/EditorController', [
               }
             }, this);
 
-            this._redoBuffer.push(doable);
+            otherBuffer.add(doable);
           break;
 
           default:
@@ -341,7 +342,8 @@ define('controllers/EditorController', [
     },
 
     _startUndoOperation: function() {
-      this._redoBuffer.length = 0;
+      this.editorModel.redoBuffer.reset();
+      // this.editorModel.set('redoBuffer', this._redoBuffer);
       this._currentUndoable = { changes: [] };
     },
 
@@ -350,7 +352,8 @@ define('controllers/EditorController', [
         this._currentUndoable.changes = _.compact(this._currentUndoable.changes);
 
         if(this._currentUndoable.changes.length) {
-          this._undoBuffer.push(this._currentUndoable);
+          this.editorModel.undoBuffer.add(this._currentUndoable);
+          // this.editorModel.set('undoBuffer', this._undoBuffer);
 
           console.log('Commited undoable with ' + this._currentUndoable.changes.length + ' change(s).');
         }
