@@ -283,14 +283,11 @@ define('uchuu', [
       var that = this,
         stage = options.stage;
 
-      global.currentMap = new MapModel(stage);
+      global.currentMap = new MapModel(stage, {
+        filePath: ''
+      });
 
       _.bindAll(this, 'recalculateLayout');
-
-      // this.$el
-      //   .find('#editor-content')
-      //   .empty()
-      //   .append(uchuu.constructStageElement(stage));
       
       var editorModel = new EditorModel();
       var editorController = new EditorController({
@@ -311,6 +308,11 @@ define('uchuu', [
         if(editorController && editorController.canRedo()) {
           editorController.performRedo();
         }
+      });
+
+      jwerty.key('ctrl+S/cmd+S', function(evt) {
+        uchuu.save('assets/stages/map-pearlman.json', JSON.stringify(global.currentMap.toJSON()));
+        evt.preventDefault();
       });
 
       var tilesetController = new TilesetController({
@@ -348,7 +350,6 @@ define('uchuu', [
 
       this.listenTo(editorModel, 'change:currentTile', function(model) {
         console.log('Selected tile changed to ' + model.get('currentTile'));
-        uchuu.save('assets/stages/map-pearlman.json', JSON.stringify(global.currentMap.toJSON()));
       });
 
       this.trigger('layoutChanged');
@@ -402,6 +403,10 @@ define('uchuu', [
           roomModel.stage = this;
           roomModel.gridsize = this.get('gridsize');
         }, this));
+      }
+
+      if(options) {
+        this.filePath = options.filePath;
       }
     }
   });
