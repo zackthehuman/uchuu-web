@@ -160,7 +160,7 @@ define('controllers/EditorController', [
           }
 
           evt.preventDefault();
-          evt.stopPropagation();
+          // evt.stopPropagation();
         }
       }
     },
@@ -184,7 +184,7 @@ define('controllers/EditorController', [
           }
 
           evt.preventDefault();
-          evt.stopPropagation();
+          // evt.stopPropagation();
         }
       }
     },
