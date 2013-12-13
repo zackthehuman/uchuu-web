@@ -103,6 +103,8 @@ http.createServer(function(request, response) {
         }
       });
     }
+  } else if(uri.pathname === '/stages') {
+    // TODO: Return the list of stages
   } else {
     //
     // Serve application file
