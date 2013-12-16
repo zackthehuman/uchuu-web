@@ -6,6 +6,7 @@ var http = require('http'),
   path = require('path'),
   fs = require('fs'),
   querystring = require('querystring'),
+  _ = require('underscore'),
   port = process.argv[2] || 8888,
   contentRoot = process.argv[3] || process.cwd();
 
@@ -105,6 +106,18 @@ http.createServer(function(request, response) {
     }
   } else if(uri.pathname === '/stages') {
     // TODO: Return the list of stages
+    var stagesDirectory = path.join(contentRoot, 'assets/stages/'),
+      allStages = fs.readdirSync(stagesDirectory);
+
+    // Filter out non-json files
+    allStages = _.filter(allStages, function(path) {
+      return path.indexOf('.json') !== -1;
+    });
+
+    response.writeHead(500, {'Content-Type': 'application/json'});
+    response.write(JSON.stringify(allStages));
+    response.end();
+    return;
   } else {
     //
     // Serve application file
