@@ -106,12 +106,15 @@ http.createServer(function(request, response) {
     }
   } else if(uri.pathname === '/stages') {
     // TODO: Return the list of stages
-    var stagesDirectory = path.join(contentRoot, 'assets/stages/'),
-      allStages = fs.readdirSync(stagesDirectory);
+    var stagesDirectory = 'assets/stages/',
+      stagesPath = path.join(contentRoot, stagesDirectory),
+      allStages = fs.readdirSync(stagesPath);
 
     // Filter out non-json files
-    allStages = _.filter(allStages, function(path) {
+    allStages = _.map(_.filter(allStages, function(path) {
       return path.indexOf('.json') !== -1;
+    }), function(fileName) {
+      return path.join(stagesDirectory, fileName);
     });
 
     response.writeHead(500, {'Content-Type': 'application/json'});
