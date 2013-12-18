@@ -61,7 +61,7 @@ define('views/ToolView', function() {
         this.delegate.setCurrentTool(tool);
       }
 
-      evt.stopPropagation();
+      // evt.stopPropagation();
     },
 
     selectToolByName: function(toolName) {
@@ -95,7 +95,7 @@ define('views/ToolView', function() {
       if(this.delegate && this.delegate.requestUndo) {
         this.delegate.requestUndo();
         // evt.preventDefault();
-        evt.stopPropagation();
+        // evt.stopPropagation();
       }
     },
 
@@ -103,8 +103,8 @@ define('views/ToolView', function() {
       console.log('_handleRedoClick');
       if(this.delegate && this.delegate.requestRedo) {
         this.delegate.requestRedo();
-         //evt.preventDefault();
-        evt.stopPropagation();
+        // evt.preventDefault();
+        // evt.stopPropagation();
       }
     }
   });

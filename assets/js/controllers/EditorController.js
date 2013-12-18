@@ -142,50 +142,66 @@ define('controllers/EditorController', [
     },
 
     onRoomKeydown: function(roomView, evt) {
+      var killEvent = false;
+
       if(roomView && evt) {
         if(this.editorModel.get('currentTool') === 'move') {
           switch(evt.which) {
             case KEY_UP:
             roomView.model.set('y', roomView.model.get('y') - 1);
+            killEvent = true;
             break;
             case KEY_RIGHT:
             roomView.model.set('x', roomView.model.get('x') + 1);
+            killEvent = true;
             break;
             case KEY_DOWN:
             roomView.model.set('y', roomView.model.get('y') + 1);
+            killEvent = true;
             break;
             case KEY_LEFT:
             roomView.model.set('x', roomView.model.get('x') - 1);
+            killEvent = true;
             break;
           }
-
-          evt.preventDefault();
-          // evt.stopPropagation();
         }
+      }
+
+      if(killEvent) {
+        evt.preventDefault();
+        evt.stopPropagation();
       }
     },
 
     onTransitionKeydown: function(transitionView, evt) {
+      var killEvent = false;
+      
       if(transitionView && evt) {
         if(this.editorModel.get('currentTool') === 'move') {
           switch(evt.which) {
             case KEY_UP:
             transitionView.model.set('y', transitionView.model.get('y') - 1);
+            killEvent = true;
             break;
             case KEY_RIGHT:
             transitionView.model.set('x', transitionView.model.get('x') + 1);
+            killEvent = true;
             break;
             case KEY_DOWN:
             transitionView.model.set('y', transitionView.model.get('y') + 1);
+            killEvent = true;
             break;
             case KEY_LEFT:
             transitionView.model.set('x', transitionView.model.get('x') - 1);
+            killEvent = true;
             break;
           }
-
-          evt.preventDefault();
-          // evt.stopPropagation();
         }
+      }
+
+      if(killEvent) {
+        evt.preventDefault();
+        evt.stopPropagation();
       }
     },
 
