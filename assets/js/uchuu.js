@@ -347,6 +347,7 @@ define('uchuu', [
       // }).render().el);
 
       editorModel.set('currentTool', 'select');
+      editorModel.set('currentTile', 0);
 
       this.listenTo(editorModel, 'change:currentTile', function(model) {
         console.log('Selected tile changed to ' + model.get('currentTile'));
