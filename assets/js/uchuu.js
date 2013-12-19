@@ -310,6 +310,34 @@ define('uchuu', [
         }
       });
 
+      jwerty.key('ctrl+B/cmd+B', function() {
+        if(editorController && editorController.stopUndoOperation()) {
+          editorController.stopUndoOperation();
+        }
+        editorModel.set('currentTool', 'pencil');
+      });
+
+      jwerty.key('ctrl+G/cmd+G', function() {
+        if(editorController && editorController.stopUndoOperation()) {
+          editorController.stopUndoOperation();
+        }
+        editorModel.set('currentTool', 'floodfill');
+      });
+
+      jwerty.key('ctrl+I/cmd+I', function() {
+        if(editorController && editorController.stopUndoOperation()) {
+          editorController.stopUndoOperation();
+        }
+        editorModel.set('currentTool', 'eyedropper');
+      });
+
+      jwerty.key('ctrl+M/cmd+M', function() {
+        if(editorController && editorController.stopUndoOperation()) {
+          editorController.stopUndoOperation();
+        }
+        editorModel.set('currentTool', 'move');
+      });
+
       jwerty.key('ctrl+S/cmd+S', function(evt) {
         uchuu.save('assets/stages/map-pearlman.json', JSON.stringify(global.currentMap.toJSON()));
         evt.preventDefault();

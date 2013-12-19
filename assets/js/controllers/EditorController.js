@@ -133,7 +133,7 @@ define('controllers/EditorController', [
       // console.log('Mouse up in a room', roomView);
       // TODO: Depending on tool selected, complete an edit
       this._commitUndoOperation();
-      this._stopUndoOperation();
+      this.stopUndoOperation();
     },
 
     onRoomMousemove: function(roomView, pX, pY) {
@@ -175,7 +175,7 @@ define('controllers/EditorController', [
 
     onTransitionKeydown: function(transitionView, evt) {
       var killEvent = false;
-      
+
       if(transitionView && evt) {
         if(this.editorModel.get('currentTool') === 'move') {
           switch(evt.which) {
@@ -202,6 +202,12 @@ define('controllers/EditorController', [
       if(killEvent) {
         evt.preventDefault();
         evt.stopPropagation();
+      }
+    },
+
+    onTransitionClick: function(transitionView, evt) {
+      if(this.editorModel.get('currentTool') === 'resize') {
+        console.log('Going to resize!');
       }
     },
 
@@ -383,7 +389,7 @@ define('controllers/EditorController', [
       }
     },
 
-    _stopUndoOperation: function() {
+    stopUndoOperation: function() {
       this._currentUndoable = null;
     },
 

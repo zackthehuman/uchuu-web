@@ -42,6 +42,11 @@ define('views/RoomView', function() {
 
     _handleClick: function(evt) {
       console.log('Clicked on a transition-region!');
+      if(this.delegate) {
+        if(this.delegate.onTransitionClick) {
+          this.delegate.onTransitionClick(this, evt);
+        }
+      }
     },
 
     _handleKeydown: function(evt) {
