@@ -404,7 +404,6 @@ define('uchuu', [
     },
 
     initialize: function() {
-      console.log('CREATED IT');
       _.bindAll(this, '_recalculateLayout');
     },
 

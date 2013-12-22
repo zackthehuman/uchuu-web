@@ -18,17 +18,19 @@ define('models/MapModel', [
    * @mixes {SubModelSerializerMixin}
    */
   var MapModel = Backbone.Model.extend({
-    defaults: {
-      "tileset": "",
-      "gridsize": 16,
-      "musicId": 10,
-      "specialRooms": {
-        "starting": 0,
-        "midpoint": 0,
-        "bossCorridor": 0,
-        "bossChamber": 0
-      },
-      "rooms": []
+    defaults: function() {
+      return {
+        "tileset": "",
+        "gridsize": 16,
+        "musicId": 10,
+        "specialRooms": {
+          "starting": 0,
+          "midpoint": 0,
+          "bossCorridor": 0,
+          "bossChamber": 0
+        },
+        "rooms": []
+      };
     },
 
     initialize: function(attributes, options) {
