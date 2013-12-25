@@ -24,6 +24,13 @@ define('uchuu', [
 
   global.uchuu = uchuu;
 
+  var dustTest = dust.compile('Hello, {name}!', 'hello');
+  dust.loadSource(dustTest);
+
+  dust.render('hello', { name: "ZackTheHuman" }, function(err, out) {
+    console.log(out);
+  });
+
   uchuu.textures = {};
   uchuu.tilesets = {};
 
