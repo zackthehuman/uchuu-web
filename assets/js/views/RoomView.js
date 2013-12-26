@@ -104,6 +104,7 @@ define('views/RoomView', function() {
         this.listenTo(this.model, 'tileChanged', _.bind(this._drawTileChange, this));
         this.listenTo(this.model, 'change:x', _.bind(this._updatePosition, this));
         this.listenTo(this.model, 'change:y', _.bind(this._updatePosition, this));
+        this.listenTo(this.model, 'resize', _.bind(this._renderTileLayer, this));
       }
     },
 
