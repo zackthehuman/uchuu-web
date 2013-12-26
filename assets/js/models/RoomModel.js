@@ -134,11 +134,14 @@ define('models/RoomModel', [
     resize: function(newWidth, newHeight) {
       var smallestWidth = Math.min(newWidth, this.get('width')),
         smallestHeight = Math.min(newHeight, this.get('height')),
+        oldWidth = this.get('width'),
+        oldHeight = this.get('height'),
         tiles = this.get('tile'),
         attrs = this.get('attr'),
         newTiles = [],
         newAttrs = [],
-        index,
+        index = 0,
+        newIndex = 0,
         x,
         y;
 
@@ -146,16 +149,21 @@ define('models/RoomModel', [
       // and then copy over the tile data safely.
       for(y = 0; y < newHeight; ++y) {
         for(x = 0; x < newWidth; ++x) {
+          index = (y * newWidth) + x;
           newTiles[index] = 0;
           newAttrs[index] = 0;
         }
       }
 
-      for(y = 0; y < smallestHeight; ++y) {
-        for(x = 0; x < smallestWidth; ++x) {
-          index = (y * smallestWidth) + x;
-          newTiles[index] = tiles[index];
-          newAttrs[index] = attrs[index];
+      for(y = 0; y < oldHeight; ++y) {
+        for(x = 0; x < oldWidth; ++x) {
+          // Make sure we respect the clipping between the two arrays.
+          if(y < newHeight && x < newWidth) {
+            index = (y * oldWidth) + x;
+            newIndex = (y * newWidth) + x;
+            newTiles[newIndex] = tiles[index];
+            newAttrs[newIndex] = attrs[index];
+          }
         }
       }
 
