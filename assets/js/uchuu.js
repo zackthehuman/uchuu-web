@@ -257,6 +257,12 @@ define('uchuu', [
         console.log('Selected tile changed to ' + model.get('currentTile'));
       });
 
+      $.when(uchuu.load('assets/templates/enemies.json'))
+        .done(function(enemiesJson) {
+          var enemies = JSON.parse(enemiesJson);
+          console.log('Loaded enemies: ', enemies.length);
+        });
+
       this.trigger('layoutChanged');
     },
 
