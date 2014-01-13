@@ -5,6 +5,7 @@ define('uchuu', [
   'models/EditorModel',
   'models/RoomModel',
   'models/MapModel',
+  'models/EnemyModel',
   'controllers/TilesetController',
   'controllers/ToolController',
   'controllers/EditorController',
@@ -14,6 +15,7 @@ define('uchuu', [
   EditorModel,
   RoomModel,
   MapModel,
+  EnemyModel,
   TilesetController,
   ToolController,
   EditorController,
@@ -258,10 +260,15 @@ define('uchuu', [
       });
 
       $.when(uchuu.load('assets/templates/enemies.json'))
-        .done(function(enemiesJson) {
+        .done(_.bind(function(enemiesJson) {
           var enemies = JSON.parse(enemiesJson);
-          console.log('Loaded enemies: ', enemies.length);
-        });
+
+          this.enemies = new Backbone.Collection(enemies, {
+            model: EnemyModel
+          });
+
+          console.log('Loaded enemies: ', this.enemies);
+        }, this));
 
       this.trigger('layoutChanged');
     },

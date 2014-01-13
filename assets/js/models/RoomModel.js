@@ -13,19 +13,19 @@ define('models/RoomModel', [
     DEFAULT_CAMERA_BOUND_Y      = 1;
 
   var TransitionRegionModel = Backbone.Model.extend({});
-  var EnemyModel = Backbone.Model.extend({});
-  var ItemModel = Backbone.Model.extend({});
+  var EnemySpawnerModel = Backbone.Model.extend({});
+  var ItemSpawnerModel = Backbone.Model.extend({});
 
   var TransitionRegionCollection = Backbone.Collection.extend({
     model: TransitionRegionModel
   });
 
   var EnemyCollection = Backbone.Collection.extend({
-    model: EnemyModel
+    model: EnemySpawnerModel
   });
 
   var ItemCollection = Backbone.Collection.extend({
-    model: ItemModel
+    model: ItemSpawnerModel
   });
 
   /**
