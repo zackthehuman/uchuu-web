@@ -189,6 +189,7 @@ define('views/RoomView', function() {
         this._renderAttrLayer();
         this._renderCameraBounds();
         this._renderTransitionRegions();
+        this._renderSpawners();
 
         this.$el.empty()
           .append(this.tileCanvas)
@@ -325,6 +326,13 @@ define('views/RoomView', function() {
           delegate: this.delegate
         }).render().el);
       }, this);
+    },
+
+    _renderSpawners: function() {
+      var enemySpawners = this.model.subModels.enemies,
+        itemSpawners = this.model.subModels.items;
+
+      console.log(enemySpawners.length + ' enemies, ' + itemSpawners.length + ' items.');
     },
 
     drawTile: function(tileIndex, x, y) {
