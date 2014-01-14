@@ -185,6 +185,18 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
 }
 
+.spawner {
+  outline: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.spawner.enemy-spawner {
+  background: rgba(192, 32, 32, 0.6);
+}
+
+.spawner.item-spawner {
+  background: rgba(32, 32, 192, 0.6);
+}
+
 .layer-attribute {
   display: none;
   position: absolute;

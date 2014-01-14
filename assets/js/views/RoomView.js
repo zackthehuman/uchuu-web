@@ -74,6 +74,39 @@ define('views/RoomView', function() {
     }
   });
 
+var EnemySpawnerView = Backbone.View.extend({
+  className: 'spawner enemy-spawner',
+  delegate: null,
+  model: null,
+
+  initialize: function(options) {
+    options = options || {};
+
+    this.delegate = options.delegate;
+    this.model = options.model;
+  },
+
+  render: function() {
+    this.$el
+      .css({
+        position: 'absolute',
+        left: parseInt(this.model.get('x'), 10) + 'px',
+        top: parseInt(this.model.get('y'), 10) + 'px',
+        width: '16px',
+        height: '16px'
+      })
+      .attr({
+        title: this.model.get('type')
+      })
+
+    return this;
+  }
+});
+
+var ItemSpawnerView = EnemySpawnerView.extend({
+  className: 'spawner item-spawner'
+});
+
   var RoomView = Backbone.View.extend({
     className: 'room',
 
@@ -195,7 +228,8 @@ define('views/RoomView', function() {
           .append(this.tileCanvas)
           .append(this.attrCanvas)
           .append(this.cameraBounds)
-          .append(this.transitionRegions);
+          .append(this.transitionRegions)
+          .append(this.spawners);
 
         this.$el.css({
           width: tileWidth * gridSize,
@@ -333,6 +367,22 @@ define('views/RoomView', function() {
         itemSpawners = this.model.subModels.items;
 
       console.log(enemySpawners.length + ' enemies, ' + itemSpawners.length + ' items.');
+
+      this.spawners = [];
+
+      enemySpawners.each(function(spawner) {
+        this.spawners.push(new EnemySpawnerView({
+          model: spawner,
+          delegate: this.delegate
+        }).render().el);
+      }, this);
+
+      itemSpawners.each(function(spawner) {
+        this.spawners.push(new ItemSpawnerView({
+          model: spawner,
+          delegate: this.delegate
+        }).render().el);
+      }, this);
     },
 
     drawTile: function(tileIndex, x, y) {
