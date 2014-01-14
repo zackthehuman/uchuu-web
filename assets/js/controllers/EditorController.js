@@ -211,6 +211,22 @@ define('controllers/EditorController', [
       }
     },
 
+    onEnemySpawnerClick: function(spawnerView, evt) {
+      console.log('Clicked on an enemy spawner!', spawnerView);
+    },
+
+    onEnemySpawnerKeydown: function(spawnerView, evt) {
+      console.log('Keydown on an enemy spawner!', spawnerView);
+    },
+
+    onItemSpawnerClick: function(spawnerView, evt) {
+      console.log('Clicked on an item spawner!', spawnerView);
+    },
+
+    onItemSpawnerKeydown: function(spawnerView, evt) {
+      console.log('Keydown on an item spawner!', spawnerView);
+    },
+
     _performToolOperation: function(roomView, pX, pY, eventType) {
       if(this.editorModel) {
         switch(this.editorModel.get('currentTool')) {

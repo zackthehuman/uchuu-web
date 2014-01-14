@@ -79,11 +79,32 @@ var EnemySpawnerView = Backbone.View.extend({
   delegate: null,
   model: null,
 
+  events: {
+    'click': '_handleClick',
+    'keydown': '_handleKeydown'
+  },
+
   initialize: function(options) {
     options = options || {};
 
     this.delegate = options.delegate;
     this.model = options.model;
+  },
+
+  _handleClick: function(evt) {
+    if(this.delegate) {
+      if(this.delegate.onEnemySpawnerClick) {
+        this.delegate.onEnemySpawnerClick(this, evt);
+      }
+    }
+  },
+
+  _handleKeydown: function(evt) {
+    if(this.delegate) {
+      if(this.delegate.onEnemySpawnerKeydown) {
+        this.delegate.onEnemySpawnerKeydown(this, evt);
+      }
+    }
   },
 
   render: function() {
@@ -104,7 +125,28 @@ var EnemySpawnerView = Backbone.View.extend({
 });
 
 var ItemSpawnerView = EnemySpawnerView.extend({
-  className: 'spawner item-spawner'
+  className: 'spawner item-spawner',
+
+  events: {
+    'click': '_handleClick',
+    'keydown': '_handleKeydown'
+  },
+
+  _handleClick: function(evt) {
+    if(this.delegate) {
+      if(this.delegate.onItemSpawnerClick) {
+        this.delegate.onItemSpawnerClick(this, evt);
+      }
+    }
+  },
+
+  _handleKeydown: function(evt) {
+    if(this.delegate) {
+      if(this.delegate.onItemSpawnerKeydown) {
+        this.delegate.onItemSpawnerKeydown(this, evt);
+      }
+    }
+  }
 });
 
   var RoomView = Backbone.View.extend({
