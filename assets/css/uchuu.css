@@ -54,7 +54,8 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2000 !important;
 }
 
-.room:focus {
+.room:focus,
+.spawner:focus {
   animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
   -moz-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;
   -webkit-animation: red-smooth-flash 1s linear -1s infinite alternate forwards;

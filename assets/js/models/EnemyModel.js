@@ -34,6 +34,8 @@ define('models/EnemyModel', [], function() {
       };
     },
 
+    idAttribute: 'name',
+
     initialize: function(attributes, options) {
       Backbone.Model.prototype.initialize.apply(this, arguments);
     }

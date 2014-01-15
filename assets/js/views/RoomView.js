@@ -89,6 +89,18 @@ var EnemySpawnerView = Backbone.View.extend({
 
     this.delegate = options.delegate;
     this.model = options.model;
+
+    _.bindAll(this,
+      '_updatePosition',
+      '_handleClick',
+      '_handleKeydown',
+      'render');
+
+    if(this.model) {
+      this.listenTo(this.model, 'change:x', this._updatePosition);
+      this.listenTo(this.model, 'change:y', this._updatePosition);
+      this.listenTo(this.model, 'change:type', this._updatePosition);
+    } 
   },
 
   _handleClick: function(evt) {
@@ -107,18 +119,48 @@ var EnemySpawnerView = Backbone.View.extend({
     }
   },
 
+  _updatePosition: function(spawnerModel, newCoord) {
+    console.log('_updatePosition', arguments);
+    var enemyModel = window.allEnemies.get(this.model.get('type')),
+      leftPosition = parseInt(this.model.get('x'), 10),
+      topPosition = parseInt(this.model.get('y'), 10),
+      width = 16,
+      height = 16,
+      boundingBox = null;
+
+    if(enemyModel) {
+      boundingBox = enemyModel.get('boundingBox');
+
+      if(boundingBox) {
+        width = boundingBox.width;
+        height = boundingBox.height;
+
+        if(boundingBox.originX) {
+          leftPosition -= boundingBox.originX;
+        }
+
+        if(boundingBox.originY) {
+          topPosition -= boundingBox.originY;
+        }
+      }
+    }
+
+    this.$el.css({
+      position: 'absolute',
+      left: leftPosition + 'px',
+      top: topPosition + 'px',
+      width: width + 'px',
+      height: height + 'px'
+    });
+  },
+
   render: function() {
-    this.$el
-      .css({
-        position: 'absolute',
-        left: parseInt(this.model.get('x'), 10) + 'px',
-        top: parseInt(this.model.get('y'), 10) + 'px',
-        width: '16px',
-        height: '16px'
-      })
-      .attr({
-        title: this.model.get('type')
-      })
+    this._updatePosition();
+
+    this.$el.attr({
+      title: this.model.get('type'),
+      tabIndex: 1
+    });
 
     return this;
   }
@@ -146,6 +188,22 @@ var ItemSpawnerView = EnemySpawnerView.extend({
         this.delegate.onItemSpawnerKeydown(this, evt);
       }
     }
+  },
+
+  render: function() {
+    this.$el
+      .css({
+        position: 'absolute',
+        left: parseInt(this.model.get('x'), 10) + 'px',
+        top: parseInt(this.model.get('y'), 10) + 'px',
+        width: '16px',
+        height: '16px'
+      })
+      .attr({
+        title: this.model.get('type')
+      })
+
+    return this;
   }
 });
 

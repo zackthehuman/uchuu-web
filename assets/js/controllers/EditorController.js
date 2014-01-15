@@ -217,6 +217,35 @@ define('controllers/EditorController', [
 
     onEnemySpawnerKeydown: function(spawnerView, evt) {
       console.log('Keydown on an enemy spawner!', spawnerView);
+      var killEvent = false;
+
+      if(spawnerView && evt) {
+        if(this.editorModel.get('currentTool') === 'move') {
+          switch(evt.which) {
+            case KEY_UP:
+            spawnerView.model.set('y', spawnerView.model.get('y') - 1);
+            killEvent = true;
+            break;
+            case KEY_RIGHT:
+            spawnerView.model.set('x', spawnerView.model.get('x') + 1);
+            killEvent = true;
+            break;
+            case KEY_DOWN:
+            spawnerView.model.set('y', spawnerView.model.get('y') + 1);
+            killEvent = true;
+            break;
+            case KEY_LEFT:
+            spawnerView.model.set('x', spawnerView.model.get('x') - 1);
+            killEvent = true;
+            break;
+          }
+        }
+      }
+
+      if(killEvent) {
+        evt.preventDefault();
+        evt.stopPropagation();
+      }
     },
 
     onItemSpawnerClick: function(spawnerView, evt) {

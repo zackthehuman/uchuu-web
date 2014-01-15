@@ -259,17 +259,6 @@ define('uchuu', [
         console.log('Selected tile changed to ' + model.get('currentTile'));
       });
 
-      $.when(uchuu.load('assets/templates/enemies.json'))
-        .done(_.bind(function(enemiesJson) {
-          var enemies = JSON.parse(enemiesJson);
-
-          this.enemies = new Backbone.Collection(enemies, {
-            model: EnemyModel
-          });
-
-          console.log('Loaded enemies: ', this.enemies);
-        }, this));
-
       this.trigger('layoutChanged');
     },
 
