@@ -119,11 +119,10 @@ var EnemySpawnerView = Backbone.View.extend({
     }
   },
 
-  _updatePosition: function(spawnerModel, newCoord) {
-    console.log('_updatePosition', arguments);
-    var enemyModel = window.allEnemies.get(this.model.get('type')),
-      leftPosition = parseInt(this.model.get('x'), 10),
-      topPosition = parseInt(this.model.get('y'), 10),
+  _updatePosition: function(spawnerModel) {
+    var enemyModel = window.allEnemies.get(spawnerModel.get('type')),
+      leftPosition = parseInt(spawnerModel.get('x'), 10),
+      topPosition = parseInt(spawnerModel.get('y'), 10),
       width = 16,
       height = 16,
       boundingBox = null;
@@ -155,7 +154,7 @@ var EnemySpawnerView = Backbone.View.extend({
   },
 
   render: function() {
-    this._updatePosition();
+    this._updatePosition(this.model);
 
     this.$el.attr({
       title: this.model.get('type'),
