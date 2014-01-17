@@ -189,18 +189,47 @@ var ItemSpawnerView = EnemySpawnerView.extend({
     }
   },
 
+  _updatePosition: function(spawnerModel) {
+    var iteModel = null,
+      leftPosition = parseInt(spawnerModel.get('x'), 10),
+      topPosition = parseInt(spawnerModel.get('y'), 10),
+      width = 16,
+      height = 16,
+      boundingBox = null;
+
+    if(iteModel) {
+      boundingBox = iteModel.get('boundingBox');
+
+      if(boundingBox) {
+        width = boundingBox.width;
+        height = boundingBox.height;
+
+        if(boundingBox.originX) {
+          leftPosition -= boundingBox.originX;
+        }
+
+        if(boundingBox.originY) {
+          topPosition -= boundingBox.originY;
+        }
+      }
+    }
+
+    this.$el.css({
+      position: 'absolute',
+      left: leftPosition + 'px',
+      top: topPosition + 'px',
+      width: width + 'px',
+      height: height + 'px'
+    });
+  },
+
   render: function() {
-    this.$el
-      .css({
-        position: 'absolute',
-        left: parseInt(this.model.get('x'), 10) + 'px',
-        top: parseInt(this.model.get('y'), 10) + 'px',
-        width: '16px',
-        height: '16px'
-      })
-      .attr({
-        title: this.model.get('type')
-      })
+    this._updatePosition(this.model);
+
+    this.$el.attr({
+      title: this.model.get('type'),
+      tabIndex: 1
+    });
 
     return this;
   }
