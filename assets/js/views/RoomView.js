@@ -190,15 +190,15 @@ var ItemSpawnerView = EnemySpawnerView.extend({
   },
 
   _updatePosition: function(spawnerModel) {
-    var iteModel = null,
+    var itemModel = window.allItems.get(spawnerModel.get('type')),
       leftPosition = parseInt(spawnerModel.get('x'), 10),
       topPosition = parseInt(spawnerModel.get('y'), 10),
       width = 16,
       height = 16,
       boundingBox = null;
 
-    if(iteModel) {
-      boundingBox = iteModel.get('boundingBox');
+    if(itemModel) {
+      boundingBox = itemModel.get('boundingBox');
 
       if(boundingBox) {
         width = boundingBox.width;
