@@ -6,10 +6,13 @@ define('views/TilesetView', function() {
     
     events: {
       'click .tile': '_handleTileClick',
+      'click input:checkbox': '_updateAttributeMask',
       'mousedown': '_handleContainerMousedown',
       'mouseup': '_handleContainerMouseup',
       'mousemove': '_handleContainerMousemove'
     },
+
+    editorModel: null,
 
     tileset: null,
 
@@ -17,10 +20,13 @@ define('views/TilesetView', function() {
 
     tileIndexMap: null,
 
+    attributeMask: 0,
+
     initialize: function(options) {
       _.bindAll(this,
         'render',
         'selectTileByIndex',
+        '_updateAttributeMask',
         '_handleTileClick',
         '_handleContainerMousedown',
         '_handleContainerMouseup',
@@ -39,14 +45,29 @@ define('views/TilesetView', function() {
         if(options.tilesetImage) {
           this.tilesetImage = options.tilesetImage;
         }
+
+        if(options.editorModel) {
+          this.editorModel = options.editorModel;
+
+          this.listenTo(this.editorModel, 'change:editingMode', _.bind(function(source, mode) {
+            console.log('I heard the editing mode changed. ', arguments);
+            this.setMode(mode);
+          }, this));
+
+          this.setMode(this.editorModel.get('editingMode'));
+        }
       }
     },
 
     render: function() {
-      var tileElements = [];
+      var tileElements = [],
+        tileContainer,
+        attrContainer;
 
       if(this.tileset && this.tilesetImage) {
-        this.$el.empty();
+        this.$el.html('<div class="tiles"></div><div class="attributes"></div>');
+        tileContainer = this.$el.find('.tiles');
+        attrContainer = this.$el.find('.attributes');
         delete this.tileIndexMap;
         this.tileIndexMap = {};
 
@@ -67,10 +88,53 @@ define('views/TilesetView', function() {
           this.tileIndexMap['index-' + index] = tileElement;
         }, this));
 
-        this.$el.append(tileElements);
+        tileContainer.append(tileElements);
       }
 
+      if(dust) {
+        dust.render('attribute_editor', {}, function(err, out) {
+          if(err) {
+            console.log(err);
+          } else {
+            attrContainer.html(out);
+          }
+        });
+      }
+
+      this.setMode(this.editorModel.get('editingMode'));
+
       return this;
+    },
+
+    /**
+     * Switches between different tile modes (Tile & Attribute, for example).
+     * @param {String} mode - the mode to switch to.
+     */
+    setMode: function(mode) {
+      if('tile' === mode) {
+        this.$el.children('div').hide().filter('.tiles').show();
+      } else if('attribute' === mode) {
+        this.$el.children('div').hide().filter('.attributes').show();
+      }
+    },
+
+    _updateAttributeMask: function() {
+      var radioButtons = this.$el.find('.attributes input:checked'),
+        maskValue = 0;
+
+      radioButtons.each(function() {
+        var button = $(this),
+          value = parseInt(button.val(), 10);
+
+
+        maskValue |= value;
+      });
+
+      this.attributeMask = maskValue;
+
+      console.log('_updateAttributeMask: ' + this.attributeMask);
+
+      return this.attributeMask;
     },
 
     selectTileByIndex: function(index) {

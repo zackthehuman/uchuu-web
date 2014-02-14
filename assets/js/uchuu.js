@@ -169,6 +169,17 @@ define('uchuu', [
         filePath: ''
       });
 
+      var templates = $('script').each(function(el) {
+        var element = this,
+          dustSource;
+
+        if(element.type === 'text/template') {
+          console.log('Processing template ' + element.id);
+          dustSource = dust.compile($(this).text(), this.id);
+          dust.loadSource(dustSource);
+        }
+      });
+
       _.bindAll(this, 'recalculateLayout');
       
       var editorModel = new EditorModel();
@@ -232,6 +243,7 @@ define('uchuu', [
 
       var tilesetView = new TilesetView({
         delegate: tilesetController,
+        editorModel: editorModel,
         tileset: uchuu.tilesets[stage.tileset],
         tilesetImage: uchuu.textures[uchuu.tilesets[stage.tileset].surface]
       });
@@ -254,6 +266,7 @@ define('uchuu', [
 
       editorModel.set('currentTool', 'select');
       editorModel.set('currentTile', 0);
+      editorModel.set('editingMode', 'tile');
 
       this.listenTo(editorModel, 'change:currentTile', function(model) {
         console.log('Selected tile changed to ' + model.get('currentTile'));
