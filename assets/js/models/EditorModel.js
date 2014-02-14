@@ -3,7 +3,8 @@ define('models/EditorModel', function() {
     defaults: {
       currentTool: 'unset',
       currentTile: -1,
-      editingMode: 'tile'
+      editingMode: 'tile',
+      attributeMask: 0
     },
 
     initialize: function() {

@@ -263,6 +263,7 @@ var ItemSpawnerView = EnemySpawnerView.extend({
 
       if(this.model) {
         this.listenTo(this.model, 'tileChanged', _.bind(this._drawTileChange, this));
+        this.listenTo(this.model, 'attrChanged', _.bind(this._drawAttrChange, this));
         this.listenTo(this.model, 'change:x', _.bind(this._updatePosition, this));
         this.listenTo(this.model, 'change:y', _.bind(this._updatePosition, this));
         this.listenTo(this.model, 'resize', _.bind(this.render, this));
@@ -330,6 +331,13 @@ var ItemSpawnerView = EnemySpawnerView.extend({
         pixelY = evt.tileY * this.model.gridsize;
 
       this.drawTile(evt.newValue, pixelX, pixelY);
+    },
+
+    _drawAttrChange: function(evt) {
+      var pixelX = evt.tileX * this.model.gridsize,
+        pixelY = evt.tileY * this.model.gridsize;
+
+      this.drawAttribute(evt.newValue, pixelX, pixelY);
     },
 
     render: function() {

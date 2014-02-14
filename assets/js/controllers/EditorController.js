@@ -342,6 +342,8 @@ define('controllers/EditorController', [
         tY,
         newTileValue,
         tileIndexAtXY,
+        newAttrValue,
+        attrIndexAtXY,
         tileOffset,
         tiles,
         attrs,
@@ -380,6 +382,21 @@ define('controllers/EditorController', [
             }
           break;
           case 'attribute':
+            attrIndexAtXY = attrs[tileOffset];
+            newAttrValue = this.editorModel.get('attributeMask');
+
+            if(attrIndexAtXY !== newAttrValue) {
+              change = {
+                type: 'attribute',
+                oldValue: attrIndexAtXY,
+                newValue: newAttrValue,
+                tileX: tX,
+                tileY: tY,
+                roomView: roomView
+              };
+
+              this._performTileChange(change, false);
+            }
           break;
           default:
           break;
@@ -396,7 +413,8 @@ define('controllers/EditorController', [
         oldTileValue,
         tX,
         tY,
-        change;
+        change,
+        mode = this.editorModel.get('editingMode');
 
       changes = changes || [];
       width = roomView.model.get('width');
@@ -408,19 +426,19 @@ define('controllers/EditorController', [
         return;
       }
 
-      oldTileValue = roomView.model.getTileAtXY(tX, tY);
+      oldTileValue = mode === 'tile' ? roomView.model.getTileAtXY(tX, tY) : roomView.model.getAttributeAtXY(tX, tY);
 
       if(fromValue === undefined) {
         fromValue = oldTileValue;
       }
 
       if(toValue === undefined) {
-        toValue = this.editorModel.get('currentTile');
+        toValue = mode === 'tile' ? this.editorModel.get('currentTile') : this.editorModel.get('attributeMask');
       }
 
       if(oldTileValue === fromValue && oldTileValue !== toValue) {
         change = {
-          type: 'tile', // TODO: Support "attribute" types here too
+          type: this.editorModel.get('editingMode'),
           oldValue: fromValue,
           newValue: toValue,
           tileX: tX,
@@ -493,12 +511,12 @@ define('controllers/EditorController', [
               );
             } else if(change.type === 'attribute') {
               // TODO: Implement this
-              //
-              // roomModel.setAttributeAtXY(
-              //   isUndo ? change.oldValue : change.newValue,
-              //   change.tileX,
-              //   change.tileY
-              // );
+              
+              roomModel.setAttributeAtXY(
+                isUndo ? change.oldValue : change.newValue,
+                change.tileX,
+                change.tileY
+              );
             }
           }
         }

@@ -131,6 +131,7 @@ define('views/TilesetView', function() {
       });
 
       this.attributeMask = maskValue;
+      this.editorModel.set('attributeMask', this.attributeMask);
 
       console.log('_updateAttributeMask: ' + this.attributeMask);
 

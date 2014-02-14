@@ -131,6 +131,24 @@ define('models/RoomModel', [
       return tiles[(tY * this.get('width')) + tX];
     },
 
+    setAttributeAtXY: function(newValue, tX, tY) {
+      var attrs = this.get('attr');
+
+      attrs[(tY * this.get('width')) + tX] = newValue;
+
+      this.trigger('attrChanged', { 
+        newValue: newValue,
+        tileX: tX,
+        tileY: tY
+      });
+    },
+
+    getAttributeAtXY: function(tX, tY) {
+      var attrs = this.get('attr');
+
+      return attrs[(tY * this.get('width')) + tX];
+    },
+
     resize: function(newWidth, newHeight) {
       var smallestWidth = Math.min(newWidth, this.get('width')),
         smallestHeight = Math.min(newHeight, this.get('height')),
