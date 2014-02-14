@@ -558,13 +558,32 @@ var ItemSpawnerView = EnemySpawnerView.extend({
       if(this.tileCanvas) {
         graphics = this.attrCanvas[0].getContext('2d');
 
+        // Air
         if(attrValue === 0) {
           graphics.setFillColor('#000');
-        } else if(attrValue === 1) {
-          graphics.setFillColor('#FFF');
+          graphics.fillRect(x, y, gridSize, gridSize);
+        } else {
+          // Solid
+          if((attrValue & 1) === 1) {
+            graphics.setFillColor('#FFF');
+            graphics.fillRect(x, y, gridSize, gridSize);
+          }
+          // Ladder
+          if((attrValue & 2) === 2) {
+            graphics.setFillColor('#0F0');
+            graphics.fillRect(x + 1, y + 1, gridSize - 2, gridSize - 2);
+          }
+          // Platform
+          if((attrValue & 4) === 4) {
+            graphics.setFillColor('#00F');
+            graphics.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
+          }
+          // Platform
+          if((attrValue & 8) === 8) {
+            graphics.setFillColor('#F00');
+            graphics.fillRect(x + 3, y + 3, gridSize - 6, gridSize - 6);
+          }
         }
-
-        graphics.fillRect(x, y, gridSize, gridSize);
       }
     }
   });
