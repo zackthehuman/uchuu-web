@@ -571,17 +571,42 @@ var ItemSpawnerView = EnemySpawnerView.extend({
           // Ladder
           if((attrValue & 2) === 2) {
             graphics.setFillColor('#0F0');
-            graphics.fillRect(x + 1, y + 1, gridSize - 2, gridSize - 2);
+            graphics.fillRect(x, y + 2, gridSize, 2);
+            graphics.fillRect(x, y + 6, gridSize, 2);
+            graphics.fillRect(x, y + 10, gridSize, 2);
+            graphics.fillRect(x, y + 14, gridSize, 2);
           }
           // Platform
           if((attrValue & 4) === 4) {
-            graphics.setFillColor('#00F');
-            graphics.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
+            graphics.setFillColor('#FFF');
+            graphics.fillRect(x, y, gridSize, 8);
           }
-          // Platform
+          // Spike
           if((attrValue & 8) === 8) {
             graphics.setFillColor('#F00');
-            graphics.fillRect(x + 3, y + 3, gridSize - 6, gridSize - 6);
+            graphics.beginPath();
+            graphics.moveTo(x, y + 16);
+            graphics.lineTo(x + 8, y);
+            graphics.lineTo(x + gridSize, y + gridSize);
+            graphics.lineTo(x, y + gridSize);
+            graphics.fill();
+          }
+          // Abyss
+          if((attrValue & 16) === 16) {
+            graphics.setFillColor('#FF0');
+            graphics.beginPath();
+            graphics.arc(x + 8, y + 8, 8, 0, 2 * Math.PI, false);
+            graphics.fill();
+          }
+          // Water
+          if((attrValue & 256) === 256) {
+            graphics.setFillColor('#44F');
+            graphics.beginPath();
+            graphics.arc(x + 8, y, 8, Math.PI, Math.PI * 2, true);
+            graphics.lineTo(x + gridSize, y + gridSize);
+            graphics.lineTo(x, y + gridSize);
+            graphics.lineTo(x, y);
+            graphics.fill();
           }
         }
       }
