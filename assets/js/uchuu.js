@@ -9,7 +9,8 @@ define('uchuu', [
   'controllers/TilesetController',
   'controllers/ToolController',
   'controllers/EditorController',
-  'views/TilesetView'
+  'views/TilesetView',
+  'UchuuDataStore'
 ], function(
   SubModelSerializerMixin,
   EditorModel,
@@ -19,8 +20,17 @@ define('uchuu', [
   TilesetController,
   ToolController,
   EditorController,
-  TilesetView
+  TilesetView,
+  UchuuDataStore
 ) {
+  var zack = new UchuuDataStore();
+
+  zack.loadAsset('assets/images/tile-wily1.png').done(function(asset) {
+    console.log('Loaded asset through DS:', asset);
+  }).fail(function() {
+    console.log('Failed to load asset through DS.');
+  });
+
   var global = window,
     uchuu = {};
 
