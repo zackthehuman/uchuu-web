@@ -24,7 +24,7 @@ define('UchuuDataStore', [], function() {
 
   /**
    * Generic function for loading asset files and returning a promise, which
-   * when resolved, yields the asset file.
+   * when resolved, yields the asset file's contents.
    *
    * @param  {String} assetPath - the path to the asset to load
    * @param  {String} [type] - the type of asset to load, either "JSON" or "PNG"
@@ -58,6 +58,10 @@ define('UchuuDataStore', [], function() {
             }));
           }, this);
 
+          image.onerror = _.bind(function() {
+            deferral.reject('Unable to load "' + assetPath + '"');
+          });
+
           image.src = '/load?path=' + assetPath;
         }
         break;
@@ -66,7 +70,8 @@ define('UchuuDataStore', [], function() {
           url: '/load',
           data: {
             path: assetPath
-          }
+          },
+          dataType: 'JSON'
         });
         break;
     }
@@ -75,7 +80,11 @@ define('UchuuDataStore', [], function() {
   };
 
   DataStore.prototype.loadTileset = function(assetPath) {
-
+    return this.loadAsset(assetPath, 'JSON').then(_.bind(function(json) {
+      return this.loadAsset(json.surface, 'PNG').then(_.bind(function() {
+        return this._tilesets.add(json);
+      }, this));
+    }, this));
   };
 
   return DataStore;
